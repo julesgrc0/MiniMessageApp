@@ -1,0 +1,85 @@
+.icon-menu {
+  transform: scale(1.5);
+}
+
+.buttons-menu {
+  width: 40px;
+  height: 40Px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.4s;
+}
+
+ion-input{
+  position: relative;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(56, 56, 56, 0.89);
+  width: calc(50% - 10px);
+  border-radius: 3Px;
+}
+
+.buttons-menu:active {
+  border-radius: 50%;
+  background: rgba(75, 75, 75, 0.74);
+}
+
+.action-section
+{
+  height: 80px;
+  width: 100%;
+  border-bottom:1px solid rgb(54, 54, 54);
+  overflow-y: scroll;
+  white-space: nowrap;
+  
+  p
+  {
+    margin: {
+      top: 15px;
+      left: 10Px;
+      bottom: 5Px;
+    };
+    color: rgb(192, 192, 192);
+    font-size: 14Px;
+    display: block;
+  }
+}
+
+.big
+{
+  height: 120px;
+  .color-item
+  {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    top: 14px;
+    position: relative;
+    background: red;
+    margin-left: 10px;
+    border-radius: 10px;
+    border:1px solid rgb(36, 36, 36);
+    &:hover
+    {
+      filter: brightness(0.8);
+    }
+  }
+}
+
+.scroll-section
+{
+  height: 80Px;
+  overflow-y: scroll;
+  white-space: nowrap;
+}
+
+ion-toggle {
+  --background: rgba(53, 53, 53, 0.486);
+  --background-checked: #7a49a5;
+
+  --handle-background: rgba(88, 88, 88, 0.932);
+  --handle-background-checked: rgba(49, 49, 49, 0.911);
+}

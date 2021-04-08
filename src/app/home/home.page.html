@@ -1,20 +1,59 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-buttons slot="end" (click)="onMenuClick()" class="buttons-menu">
+      <ion-icon class="icon-menu" name="chevron-up-circle-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title>Home - {{ activeRoom }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
+
+<ion-content [fullscreen]="true">
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <div id="chatSection" #scrollBar>
+      <br>
+      <div class="message-block" *ngFor="let message of messages">
+        <div class="message-l" *ngIf="!message.isMe" (click)="tagUser(message.username,message.userId)">
+          <div class="name" [style.color]="message.color" *ngIf="ShowUserTag">
+            @{{message.username}}
+          </div>
+          <div class="content" [innerHTML]="message.MessageContent | messageRender">
+          </div>
+        </div>
+
+        <div class="message-r" *ngIf="message.isMe">
+          <div class="name" [style.color]="ActiveUser.color" *ngIf="ShowSelfTag" >
+            @{{message.username}}
+          </div>
+          <div class="content" [innerHTML]="message.MessageContent | messageRender">
+          </div>
+        </div>
+      </div>
+      <br><br><bR><br><br><bR>
+    </div>
+    <div id="bottomSection" *ngIf="!GiftViewActive && !loading">
+      <ion-input (ionFocus)="onMessageBoxToggle()" (ionBlur)="onMessageBoxToggle()" class="message-box"
+        [(ngModel)]="MessageValue" placeholder="Envoyer un message" (keypress)="onKeyPress($event)"></ion-input>
+      <button class="btn-round" (click)="toggleGiftView()">
+        <ion-icon name="gift-outline" class="gift-icon"></ion-icon>
+      </button>
+      <button class="btn-round-right" (click)="sendMessage()">
+        <ion-icon name="send-outline" class="gift-icon"></ion-icon>
+      </button>
+    </div>
+    <div id="giftSection" *ngIf="GiftViewActive && !loading">
+      <button class="btn-round-close" (click)="toggleGiftView()">
+        <ion-icon name="close-outline" class="gift-icon"></ion-icon>
+      </button>
+      <div id="scrollSection">
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+      </div>
+    </div>
   </div>
 </ion-content>

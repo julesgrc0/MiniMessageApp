@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end" (click)="dismiss()" class="buttons-menu">
+      <ion-icon class="icon-menu" name="close-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title>Options</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="action-section">
+    <ion-input [(ngModel)]="username" (ionBlur)="onChangeUsername()"></ion-input>
+  </div>
+  <div class="action-section big">
+    <p>Couleur du pseudo vu par les utilisateurs</p>
+    <div class="scroll-section">
+      <div class="color-item" *ngFor="let co of colors" [style.backgroundColor]="co" (click)="setColor(co)"></div>
+    </div>
+  </div>
+  <div class="action-section">
+    <p>Sauvegarder les conversations</p>
+    <ion-toggle [(ngModel)]="options.saveMessage"></ion-toggle>
+  </div>
+  <div class="action-section">
+    <p>Sauvegarder les images</p>
+    <ion-toggle [(ngModel)]="options.saveImage"></ion-toggle>
+  </div>
+  <div class="action-section">
+    <p>Sauvegarder les dernières rooms</p>
+    <ion-toggle [(ngModel)]="options.saveRoom"></ion-toggle>
+  </div>
+  <div class="action-section">
+    <p>Montrer mon @ utilisateur</p>
+    <ion-toggle [(ngModel)]="options.showSelfTag"></ion-toggle>
+  </div>
+  <div class="action-section">
+    <p>Montrer @ des autres utilisateurs</p>
+    <ion-toggle [(ngModel)]="options.showUsersTag"></ion-toggle>
+  </div>
+  <div class="action-section">
+    <p>Message de confirmation de sauvegarde</p>
+    <ion-toggle [(ngModel)]="options.showToast"></ion-toggle>
+  </div>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="dark">
+      <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+
+      <ion-fab-button color="light" (click)="createRoom()">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+
+      <ion-fab-button color="light" (click)="selectRoom()">
+        <ion-icon name="search"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>
