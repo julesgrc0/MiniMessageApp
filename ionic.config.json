@@ -1,0 +1,7 @@
+{
+  "name": "Send",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
