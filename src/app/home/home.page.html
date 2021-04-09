@@ -1,15 +1,16 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end" (click)="onMenuClick()" class="buttons-menu">
+    <ion-buttons slot="end" (click)="onMenuClick()" class="buttons-menu" *ngIf="!HaveUpdate">
       <ion-icon class="icon-menu" name="chevron-up-circle-outline"></ion-icon>
     </ion-buttons>
-    <ion-title>Home - {{ activeRoom }}</ion-title>
+    <ion-title *ngIf="!HaveUpdate">Home - {{ activeRoom }}</ion-title>
+    <ion-title *ngIf="HaveUpdate">Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
 
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" *ngIf="!HaveUpdate">
   <div class="loader" *ngIf="loading">
     <ion-spinner ></ion-spinner>
   </div>
@@ -45,7 +46,7 @@
         <ion-icon name="send-outline" class="gift-icon"></ion-icon>
       </button>
     </div>
-    <div id="giftSection"  [@openClose]="GiftViewActive ? 'open' : 'closed'">
+    <div id="giftSection"  [@openClose]="GiftViewActive ? 'open' : 'closed'" [style.display]="GiftViewActive ? 'block' : 'none'">
       <button class="btn-round-close" (click)="toggleGiftView()">
         <ion-icon name="close-outline" class="gift-icon"></ion-icon>
       </button>
@@ -67,4 +68,7 @@
       </div>
     </div>
   </div>
+</ion-content>
+<ion-content [fullscreen]="true" *ngIf="HaveUpdate">
+  <p class="update">L'application n'est plus à jour merci de vérifier que vous avait bien installer la nouvelle version (v{{UpdateVersion}}) .</p>
 </ion-content>

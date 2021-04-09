@@ -17,16 +17,16 @@
   transition: 0.5s;
 }
 
-.loader
-{
+.loader {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   display: flex;
-  align-items: center; 
-  justify-content: center; 
-  ion-spinner{
+  align-items: center;
+  justify-content: center;
+
+  ion-spinner {
     height: 60px;
     width: 60px;
   }
@@ -92,8 +92,7 @@
   transition: 0.5s;
 }
 
-.btn-round-right
-{
+.btn-round-right {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,8 +109,8 @@
   transition: 0.1s;
 }
 
-.btn-round-right:active,.btn-round:active
-{
+.btn-round-right:active,
+.btn-round:active {
   transform: scale(1.1);
 }
 
@@ -175,8 +174,7 @@
 }
 
 
-.message-block
-{
+.message-block {
   margin: 0;
   padding: 0;
   display: block;
@@ -189,19 +187,18 @@
   height: auto;
   margin-bottom: 8px;
 
-  .name 
-  {
+  .name {
     font-size: 13Px;
     text-overflow: ellipsis;
-    overflow: hidden; 
-    width: 50%; 
-    white-space: nowrap;    
+    overflow: hidden;
+    width: 50%;
+    white-space: nowrap;
     position: relative;
-    color: rgb(208, 43, 230); /*default color*/
+    color: rgb(208, 43, 230);
+    /*default color*/
   }
 
-  .content 
-  {
+  .content {
     margin-top: 8px;
     padding: 8px 10px;
     background: rgba(56, 56, 56, 0.616);
@@ -217,19 +214,17 @@
   height: auto;
   margin-bottom: 8px;
 
-  .name 
-  {
+  .name {
     font-size: 13Px;
     text-overflow: ellipsis;
-    overflow: hidden; 
-    width: 50%; 
+    overflow: hidden;
+    width: 50%;
     white-space: nowrap;
     color: rgb(144, 136, 145);
     position: relative;
   }
 
-  .content 
-  {
+  .content {
     margin-top: 8px;
     padding: 8px 10px;
     background: rgba(56, 56, 56, 0.616);
@@ -237,6 +232,13 @@
   }
 }
 
-/*
-  
-*/
+.update {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75%;
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 3px;
+}

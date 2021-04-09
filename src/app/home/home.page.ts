@@ -68,6 +68,9 @@ export class HomePage implements OnInit, AfterViewChecked {
   public loading = true;
   public HaveClose = false;
 
+  public HaveUpdate = false;
+  public UpdateVersion: string = "";
+
   @ViewChild('messageElement') messageElement;
 
   @ViewChild('scrollBar') private scrollBar: ElementRef;
@@ -81,6 +84,13 @@ export class HomePage implements OnInit, AfterViewChecked {
   ) {}
 
   ngOnInit(): void {
+    this.server.hasUpdate().then(info=>{ 
+      if(info)
+      {
+        this.UpdateVersion = info;
+        this.HaveUpdate = true;
+      }
+    })
     let options = this.settings.getSettings();
     this.setupOptions(options);
     this.activeRoom =
@@ -220,6 +230,7 @@ export class HomePage implements OnInit, AfterViewChecked {
   }
 
   tagUser(userName: string, userId: string) {
+    this.messageElement.setFocus();
     this.MessageValue += ' @' + userName + ' ';
   }
 

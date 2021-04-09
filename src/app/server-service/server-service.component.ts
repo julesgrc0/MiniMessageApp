@@ -1,17 +1,21 @@
 import { Component } from '@angular/core';
 import * as io from 'socket.io-client';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-server-service',
   templateUrl: './server-service.component.html',
   styleUrls: ['./server-service.component.scss'],
 })
 export class ServerServiceComponent {
+
+  private APP_VERSION: string = "5.0.2";
   private ServerURL: string = 'https://send-server-api.herokuapp.com/';
+  
   private socket: any;
   private User = { username: '', userId: '', color: '' };
 
-  constructor() {
+  constructor(private http: HttpClient) 
+  {
     this.socket = io(this.ServerURL);
   }
 
@@ -28,6 +32,24 @@ export class ServerServiceComponent {
         resolve(this.User);
       });
     });
+  }
+
+  hasUpdate(): Promise<any> 
+  {
+    return new Promise((res,rej)=>{
+      this.http.get(this.ServerURL+"update").toPromise().then((data:any)=>{
+        if(data.error || data.message.length == 0) 
+        {
+          res(false);
+        }else
+        {
+         if(data.message[data.message.length-1].version != this.APP_VERSION)
+         {
+           res(data.message[data.message.length-1].version);
+         }
+        }
+      }).catch(err=>res(false));
+    })
   }
 
   setName(username: string) {

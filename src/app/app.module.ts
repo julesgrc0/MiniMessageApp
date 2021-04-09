@@ -17,6 +17,7 @@ import { ServerServiceComponent } from './server-service/server-service.componen
 import { CommonModule } from '@angular/common';
 import { HomeModalPageModule } from './home-modal/home-modal.module';
 import { ModalRoomPageModule } from './modal-room/modal-room.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ModalRoomPageModule } from './modal-room/modal-room.module';
     FormsModule,
     CommonModule,
     HomeModalPageModule,
-    ModalRoomPageModule
+    ModalRoomPageModule,
+    HttpClientModule,
   ],
   providers: [
     { 
