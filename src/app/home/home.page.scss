@@ -17,6 +17,21 @@
   transition: 0.5s;
 }
 
+.loader
+{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  ion-spinner{
+    height: 60px;
+    width: 60px;
+  }
+}
+
 .btn:active {
   transform: scale(0.98);
 }
@@ -61,15 +76,15 @@
   border: 1px solid rgb(77, 77, 77);
 }
 
-.btn-round,.btn-round-right {
+.btn-round {
   display: flex;
   align-items: center;
   justify-content: center;
   position: absolute;
-  top: 4Px;
   left: 10px;
-  height: 38px;
-  width: 38px;
+  top: 2Px;
+  height: 42px;
+  width: 42px;
   border-radius: 50%;
   outline: none;
   border: 1px solid rgb(77, 77, 77);
@@ -79,8 +94,25 @@
 
 .btn-round-right
 {
-  left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
   right: 10px;
+  top: 2Px;
+  height: 42px;
+  width: 42px;
+  border-radius: 50%;
+  outline: none;
+
+  border: 1px solid rgb(77, 77, 77);
+  background: rgba(58, 58, 58, 0.829);
+  transition: 0.1s;
+}
+
+.btn-round-right:active,.btn-round:active
+{
+  transform: scale(1.1);
 }
 
 .gift-icon {

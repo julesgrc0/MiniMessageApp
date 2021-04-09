@@ -31,7 +31,7 @@ import { ModalRoomPageModule } from './modal-room/modal-room.module';
     FormsModule,
     CommonModule,
     HomeModalPageModule,
-    ModalRoomPageModule,
+    ModalRoomPageModule
   ],
   providers: [
     { 
@@ -39,7 +39,7 @@ import { ModalRoomPageModule } from './modal-room/modal-room.module';
       useClass: IonicRouteStrategy
     },
     SettingsComponent,
-    ServerServiceComponent,
+    ServerServiceComponent
   ],
   bootstrap: [AppComponent],
 })

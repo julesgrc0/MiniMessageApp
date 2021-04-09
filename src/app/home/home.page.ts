@@ -10,7 +10,14 @@ import { HomeModalPage } from '../home-modal/home-modal.page';
 import { ToastController } from '@ionic/angular';
 import { SettingsComponent } from '../settings/settings.component';
 import { ServerServiceComponent } from '../server-service/server-service.component';
-
+import { Keyboard } from '@ionic-native/keyboard/ngx';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+} from '@angular/animations';
 export interface Message {
   username: string;
   userId: string;
@@ -23,8 +30,30 @@ export interface Message {
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  animations: [],
+  animations: [
+    trigger('openClose', [
+      state(
+        'open',
+        style({
+          height: '200px',
+          zIndex: 100
+        })
+      ),
+      state(
+        'closed',
+        style({
+          height: '80px',
+          zIndex:-1
+        })
+      ),
+      transition('open => closed', [animate('0.2s')]),
+      transition('closed => open', [animate('0.3s')]),
+    ]),
+  ],
+  providers: [Keyboard],
 })
+
+
 export class HomePage implements OnInit, AfterViewChecked {
   public GiftViewActive = false;
   public ShowSelfTag = true;
@@ -37,6 +66,8 @@ export class HomePage implements OnInit, AfterViewChecked {
 
   public activeRoom: number = 0;
   public loading = true;
+  private keepOpen = false;
+  @ViewChild('messageElement') messageElement;
 
   @ViewChild('scrollBar') private scrollBar: ElementRef;
 
@@ -44,22 +75,24 @@ export class HomePage implements OnInit, AfterViewChecked {
     public modalController: ModalController,
     private settings: SettingsComponent,
     private server: ServerServiceComponent,
-    private toast: ToastController
+    private toast: ToastController,
+    private keyboard: Keyboard
   ) {}
 
   ngOnInit(): void {
     let options = this.settings.getSettings();
     this.setupOptions(options);
-    this.activeRoom = options.defaultRoom != undefined ? options.defaultRoom : 0;
+    this.activeRoom =
+      options.defaultRoom != undefined ? options.defaultRoom : 0;
 
-    
-    this.server.getUser().then(user=>{
+    this.server.getUser().then((user) => {
       this.ActiveUser = user;
-      this.ActiveUser.username =options.userName != undefined ? options.userName : 'default';
-      this.server.setName(this.ActiveUser.username);  
+      this.ActiveUser.username =
+        options.userName != undefined ? options.userName : 'default';
+      this.server.setName(this.ActiveUser.username);
       this.roomListenners();
       this.loading = false;
-    })    
+    });
   }
 
   roomListenners() {
@@ -191,12 +224,19 @@ export class HomePage implements OnInit, AfterViewChecked {
     }
   }
 
-  sendMessage() {
-    this.server.sendMessage(this.activeRoom, this.MessageValue);
-    this.MessageValue = '';
+  sendMessage(keep = false) {
+    if (keep) {
+      this.messageElement.setFocus();
+    }
+    if(this.MessageValue != '') 
+    {
+      this.server.sendMessage(this.activeRoom, this.MessageValue);
+      this.MessageValue = '';
+    }
+    
   }
 
-  onMessageBoxToggle() {}
+  onMessageBoxToggle(e) {}
 
   toggleGiftView() {
     this.GiftViewActive = !this.GiftViewActive;
