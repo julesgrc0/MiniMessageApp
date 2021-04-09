@@ -37,7 +37,7 @@ export class ModalRoomPage implements OnInit {
         res.push(item);
       }
     });
-    console.log(res);
+
     if(res.length == 0)
     {
       res = this.rooms;

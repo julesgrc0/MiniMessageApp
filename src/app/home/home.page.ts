@@ -66,7 +66,8 @@ export class HomePage implements OnInit, AfterViewChecked {
 
   public activeRoom: number = 0;
   public loading = true;
-  private keepOpen = false;
+  public HaveClose = false;
+
   @ViewChild('messageElement') messageElement;
 
   @ViewChild('scrollBar') private scrollBar: ElementRef;
@@ -95,10 +96,11 @@ export class HomePage implements OnInit, AfterViewChecked {
     });
   }
 
-  roomListenners() {
+  roomListenners() {    
     this.server.getSocket().on(this.activeRoom + ':close', (data) => {
       this.messages = [];
       this.activeRoom = data.room;
+      this.HaveClose = true;
     });
 
     this.server.getSocket().on(this.activeRoom + ':message', (data) => {
@@ -182,15 +184,18 @@ export class HomePage implements OnInit, AfterViewChecked {
         this.server.setColor(value.color);
         hasChange = true;
       }
-
-      if (value.room != this.activeRoom) {
+      
+      if (this.HaveClose || value.room.toString() != this.activeRoom.toString()) {
+        if(this.HaveClose)
+        {
+          this.HaveClose = false;
+        }
         this.messages = [];
         hasChange = true;
 
         this.server.getSocket().off(this.activeRoom + ':message');
         this.server.getSocket().off(this.activeRoom + ':close');
         this.activeRoom = value.room;
-
         this.roomListenners();
       }
 

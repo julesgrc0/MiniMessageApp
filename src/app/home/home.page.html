@@ -17,8 +17,8 @@
     <div id="chatSection" #scrollBar>
       <br>
       <div class="message-block" *ngFor="let message of messages">
-        <div class="message-l" *ngIf="!message.isMe" (click)="tagUser(message.username,message.userId)">
-          <div class="name" [style.color]="message.color" *ngIf="ShowUserTag">
+        <div class="message-l" *ngIf="!message.isMe" >
+          <div class="name" [style.color]="message.color" *ngIf="ShowUserTag" (click)="tagUser(message.username,message.userId)">
             @{{message.username}}
           </div>
           <div class="content" [innerHTML]="message.MessageContent | messageRender">
@@ -49,7 +49,15 @@
       <button class="btn-round-close" (click)="toggleGiftView()">
         <ion-icon name="close-outline" class="gift-icon"></ion-icon>
       </button>
-      <div id="scrollSection">
+      <div class="scrollSection">
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+      </div>
+      <div class="scrollSection">
         <div class="card"></div>
         <div class="card"></div>
         <div class="card"></div>
