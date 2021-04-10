@@ -8,24 +8,25 @@ import { DialogData } from '../modal-room/modal-room.page';
   styleUrls: ['./dialog-room.component.scss'],
 })
 export class DialogRoomComponent implements OnInit {
-
   constructor(
     public dialogRef: MatDialogRef<DialogRoomComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
+  ) {}
 
   ngOnInit() {}
 
- 
-
-  close(setUndef = true): void 
-  {
-    if(!setUndef) 
-    {
+  close(setUndef = true): void {
+    if (!setUndef) {
       this.dialogRef.close(undefined);
-    }else
-    {
+    } else {
+      this.data.roomName = this.data.roomName.replace(/\s/g, '_');
+      this.data.roomName = this.data.roomName.replace(/\-/g, '.');
+      this.data.roomName = this.data.roomName
+        .match(/[a-zA-Z0-9\.\s]+/g)
+        .join('_');
+      this.data.roomName = this.data.roomName.slice(0,30);
+      this.data.roomName = this.data.roomName.toLocaleLowerCase();
       this.dialogRef.close(this.data);
     }
   }
-
 }

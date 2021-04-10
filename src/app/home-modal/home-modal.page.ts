@@ -46,6 +46,7 @@ export class HomeModalPage implements OnInit {
     this.username = this.username.replace(/\-/g, '.');
     this.username = this.username.match(/[a-zA-Z0-9\.\s]+/g).join('_');
     this.username = this.username.toLocaleLowerCase();
+    this.username = this.username.slice(0,30);
   }
 
   dismiss() {

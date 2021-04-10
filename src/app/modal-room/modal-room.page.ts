@@ -21,6 +21,7 @@ export class ModalRoomPage implements OnInit {
   public search;
   public searchRooms: any[] = [];
   public loading = false;
+  public isOpen = false;
 
   constructor(private modalCtrl: ModalController,public dialog: MatDialog) {}
 
@@ -69,9 +70,9 @@ export class ModalRoomPage implements OnInit {
 
   openRoomDialog()
   {
-    this.loading = true;
+    this.isOpen = true;
     const dialogRef = this.dialog.open(DialogRoomComponent, {
-      width: '250px',
+      height: '170px',
       data: {roomName: this.username},
       id: 'roomDialog'
     });
@@ -79,11 +80,10 @@ export class ModalRoomPage implements OnInit {
     dialogRef.afterClosed().subscribe(data => {
       if(data != undefined && data.roomName != undefined) 
       {
+        this.loading = true;
        this.createRoom(data.roomName);
-      }else
-      {
-        this.loading = false;
       }
+      this.isOpen = false;
     });
   } 
 

@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end" (click)="dismiss()" class="buttons-menu" *ngIf="!loading">
+    <ion-buttons slot="end" (click)="dismiss()" class="buttons-menu" *ngIf="!loading && !isOpen">
       <ion-icon class="icon-menu" name="close-outline"></ion-icon>
     </ion-buttons>
-    <ion-buttons slot="end"  *ngIf="loading">
+    <ion-buttons slot="end"  class="spin" *ngIf="loading">
       <ion-spinner></ion-spinner>
     </ion-buttons>
     <ion-title>Room</ion-title>
@@ -31,7 +31,7 @@
     </div>
   </ion-list>
 
-  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed" *ngIf="!isOpen">
     <ion-fab-button color="dark" (click)="openRoomDialog()">
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>

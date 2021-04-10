@@ -12,6 +12,7 @@ import {
   animate,
   transition,
 } from '@angular/animations';
+import { Platform } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { HomeModalPage } from '../home-modal/home-modal.page';
 import { ToastController } from '@ionic/angular';
@@ -78,16 +79,45 @@ export class HomePage implements OnInit, AfterViewChecked {
     private mdCtrl: ModalController,
     private settings: SettingsComponent,
     private server: ServerServiceComponent,
-    private toast: ToastController
-  ) {}
+    private toast: ToastController,
+    public platform: Platform
+  ) {
 
-  ngOnInit(): void {
+    this.platform.ready().then((value) => {
+      this.platform.pause.subscribe(() => {
+        this.messages = [];
+        this.roomRemove();
+        this.activeRoom = 0;
+        this.roomListenners();
+        this.server.getSocket().emit('room:kill', '');
+      });
+    });
+  }
+
+  checkUpdate() {
+    this.HaveUpdate = false;
     this.server.hasUpdate().then((info) => {
       if (info) {
         this.UpdateVersion = info;
         this.HaveUpdate = true;
       }
     });
+  }
+
+  ngOnInit(): void {
+
+    this.platform.backButton.subscribeWithPriority(9999, () => {
+      document.addEventListener(
+        'backbutton',
+        (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        },
+        false
+      );
+    });
+
+    this.checkUpdate();
 
     let options = this.settings.getSettings();
     this.setupOptions(options);
@@ -186,10 +216,12 @@ export class HomePage implements OnInit, AfterViewChecked {
     await modal.present();
 
     modal.onDidDismiss().then((data) => {
-      this.messages = [];
-      this.roomRemove();
-      this.activeRoom = data.data.room;
-      this.roomListenners();
+      if (data.data.room != this.activeRoom) {
+        this.messages = [];
+        this.roomRemove();
+        this.activeRoom = data.data.room;
+        this.roomListenners();
+      }
     });
   }
 
@@ -228,7 +260,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         if (this.HaveClose) {
           this.HaveClose = false;
         }
-       
+
         hasChange = true;
 
         this.messages = [];
@@ -272,14 +304,15 @@ export class HomePage implements OnInit, AfterViewChecked {
     if (keep) {
       this.messageElement.setFocus();
     }
-    if (this.MessageValue != '') 
-    {
-      if(!this.server.getSocket().hasListeners(this.activeRoom+":message") || !this.server.getSocket().hasListeners(this.activeRoom+":close"))
-      {
+    if (this.MessageValue != '') {
+      if (
+        !this.server.getSocket().hasListeners(this.activeRoom + ':message') ||
+        !this.server.getSocket().hasListeners(this.activeRoom + ':close')
+      ) {
         this.roomRemove();
         this.roomListenners();
       }
-      
+
       this.server.sendMessage(this.activeRoom, this.MessageValue);
       this.MessageValue = '';
     }
