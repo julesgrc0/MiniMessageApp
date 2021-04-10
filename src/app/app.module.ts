@@ -18,10 +18,12 @@ import { CommonModule } from '@angular/common';
 import { HomeModalPageModule } from './home-modal/home-modal.module';
 import { ModalRoomPageModule } from './modal-room/modal-room.module';
 import { HttpClientModule } from '@angular/common/http';
-
+import {MatDialogModule} from '@angular/material/dialog';
+import { DialogRoomComponent } from './dialog-room/dialog-room.component';
 @NgModule({
   declarations: [
     AppComponent,
+    DialogRoomComponent
   ],
   entryComponents: [],
   imports: [
@@ -34,6 +36,7 @@ import { HttpClientModule } from '@angular/common/http';
     HomeModalPageModule,
     ModalRoomPageModule,
     HttpClientModule,
+    MatDialogModule,
   ],
   providers: [
     { 

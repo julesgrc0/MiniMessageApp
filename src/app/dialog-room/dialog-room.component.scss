@@ -1,0 +1,39 @@
+.content{
+    position: relative;
+    height: 130px;
+    width: 100%;
+    p{
+        margin: 0;
+    }
+    .input-room{
+        background: #131313;
+        margin-top: 10px;
+        border-radius: 3Px;
+    }
+
+    .btn-close,.btn-check{
+        position: absolute;
+        top: 90px;
+        padding: 6px 13px;
+        border-radius: 3px;
+        background: #131313;
+        color: #f1f1f1;
+        outline:none;
+
+        ion-icon{
+            height: 18px;
+            width: 18px;
+        }
+    }
+
+    .btn-check
+    {
+        right: 0px;
+    }
+
+    .btn-close
+    {
+        left: 0px;
+    }
+
+}

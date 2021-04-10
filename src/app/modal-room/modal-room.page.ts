@@ -1,5 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ModalController } from '@ionic/angular';
+import { DialogRoomComponent } from '../dialog-room/dialog-room.component';
+
+export interface DialogData {
+  roomName: string;
+}
 
 @Component({
   selector: 'app-modal-room',
@@ -9,11 +15,14 @@ import { ModalController } from '@ionic/angular';
 export class ModalRoomPage implements OnInit {
   @Input() room: string;
   @Input() socket;
+  @Input() username;
+
   public rooms: any[] = [];
   public search;
   public searchRooms: any[] = [];
+  public loading = false;
 
-  constructor(private modalCtrl: ModalController) {}
+  constructor(private modalCtrl: ModalController,public dialog: MatDialog) {}
 
   ngOnInit() {
     this.socket.emit('room:list', '');
@@ -46,6 +55,38 @@ export class ModalRoomPage implements OnInit {
     return res;
   }
 
+  createRoom(roomname) 
+  {
+    this.socket.emit('room:kill', '');
+    this.socket.emit('room:code', roomname);
+    this.socket.on('code', (index) => {
+      this.room = index.room;
+      this.socket.emit('set:username',this.username);
+      this.loading = false;
+      this.dismiss();
+    });
+  }
+
+  openRoomDialog()
+  {
+    this.loading = true;
+    const dialogRef = this.dialog.open(DialogRoomComponent, {
+      width: '250px',
+      data: {roomName: this.username},
+      id: 'roomDialog'
+    });
+
+    dialogRef.afterClosed().subscribe(data => {
+      if(data != undefined && data.roomName != undefined) 
+      {
+       this.createRoom(data.roomName);
+      }else
+      {
+        this.loading = false;
+      }
+    });
+  } 
+
   onRoomClick(index) {    
     if(this.room != index)
     {
@@ -55,7 +96,8 @@ export class ModalRoomPage implements OnInit {
     this.dismiss();
   }
 
-  dismiss() {
+  dismiss() 
+  {
     this.modalCtrl.dismiss({
       dismiss: true,
       room: this.room,

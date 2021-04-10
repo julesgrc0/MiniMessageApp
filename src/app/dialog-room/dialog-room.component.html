@@ -1,0 +1,10 @@
+<div class="content">
+  <p>Entrer le nom de votre room</p>
+  <ion-input class="input-room" [(ngModel)]="data.roomName"></ion-input>
+  <button class="btn-check" (click)="close()">
+    <ion-icon name="checkmark-outline"></ion-icon>
+  </button>
+  <button class="btn-close" (click)="close(false)">
+    <ion-icon name="close-outline"></ion-icon>
+  </button>
+</div>

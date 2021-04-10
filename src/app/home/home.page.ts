@@ -11,13 +11,13 @@ import {
   style,
   animate,
   transition,
-  keyframes,
 } from '@angular/animations';
 import { ModalController } from '@ionic/angular';
 import { HomeModalPage } from '../home-modal/home-modal.page';
 import { ToastController } from '@ionic/angular';
 import { SettingsComponent } from '../settings/settings.component';
 import { ServerServiceComponent } from '../server-service/server-service.component';
+import { ModalRoomPage } from '../modal-room/modal-room.page';
 export interface Message {
   username: string;
   userId: string;
@@ -48,7 +48,7 @@ export interface Message {
       ),
       transition('open => closed', [animate('0.3s')]),
       transition('closed => open', [animate('0.3s')]),
-    ])
+    ]),
   ],
   providers: [],
 })
@@ -75,6 +75,7 @@ export class HomePage implements OnInit, AfterViewChecked {
 
   constructor(
     public modalController: ModalController,
+    private mdCtrl: ModalController,
     private settings: SettingsComponent,
     private server: ServerServiceComponent,
     private toast: ToastController
@@ -172,6 +173,26 @@ export class HomePage implements OnInit, AfterViewChecked {
     toast.present();
   }
 
+  async onRoomClick() {
+    const modal = await this.mdCtrl.create({
+      component: ModalRoomPage,
+      componentProps: {
+        room: this.activeRoom,
+        socket: this.server.getSocket(),
+        username: this.ActiveUser.username,
+      },
+    });
+
+    await modal.present();
+
+    modal.onDidDismiss().then((data) => {
+      this.messages = [];
+      this.roomRemove();
+      this.activeRoom = data.data.room;
+      this.roomListenners();
+    });
+  }
+
   async onMenuClick() {
     const modal = await this.modalController.create({
       component: HomeModalPage,
@@ -207,9 +228,10 @@ export class HomePage implements OnInit, AfterViewChecked {
         if (this.HaveClose) {
           this.HaveClose = false;
         }
-        this.messages = [];
+       
         hasChange = true;
 
+        this.messages = [];
         this.roomRemove();
         this.activeRoom = value.room;
         this.roomListenners();
@@ -250,7 +272,14 @@ export class HomePage implements OnInit, AfterViewChecked {
     if (keep) {
       this.messageElement.setFocus();
     }
-    if (this.MessageValue != '') {
+    if (this.MessageValue != '') 
+    {
+      if(!this.server.getSocket().hasListeners(this.activeRoom+":message") || !this.server.getSocket().hasListeners(this.activeRoom+":close"))
+      {
+        this.roomRemove();
+        this.roomListenners();
+      }
+      
       this.server.sendMessage(this.activeRoom, this.MessageValue);
       this.MessageValue = '';
     }

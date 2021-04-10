@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { ModalRoomPage } from '../modal-room/modal-room.page';
 
 
 @Component({
@@ -33,40 +32,13 @@ export class HomeModalPage implements OnInit {
   ];
 
   constructor(
-    private modalCtrl: ModalController,
-    private mdCtrl: ModalController
+    private modalCtrl: ModalController
   ) {}
 
   ngOnInit(): void {}
 
   setColor(color: string): void {
     this.color = color;
-  }
-
-  createRoom() {
-    this.socket.emit('set:username',this.username);
-    this.socket.emit('room:kill', '');
-    this.socket.emit('room:code', '');
-    this.socket.on('code', (index) => {
-      this.room = index.room;
-    });
-  }
-
-  async selectRoom() 
-  {
-    const modal = await this.mdCtrl.create({
-      component: ModalRoomPage,
-      componentProps: {
-        room: this.room,
-        socket:this.socket
-      },
-    });
-
-    await modal.present();
-
-    modal.onDidDismiss().then((data) => {
-      this.room = data.data.room;
-    })
   }
 
   onChangeUsername() {

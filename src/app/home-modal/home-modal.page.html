@@ -14,7 +14,9 @@
   <div class="action-section big">
     <p>Couleur du pseudo vu par les utilisateurs</p>
     <div class="scroll-section">
+      <div class="mid-item"></div>
       <div class="color-item" *ngFor="let co of colors" [style.backgroundColor]="co" (click)="setColor(co)"></div>
+      <div class="mid-item"></div>
     </div>
   </div>
   <div class="action-section">
@@ -38,7 +40,7 @@
     <ion-toggle [(ngModel)]="options.showToast"></ion-toggle>
   </div>
 
-  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+  <!-- <ion-fab horizontal="end" vertical="bottom" slot="fixed">
     <ion-fab-button color="dark">
       <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>
     </ion-fab-button>
@@ -52,5 +54,5 @@
         <ion-icon name="search"></ion-icon>
       </ion-fab-button>
     </ion-fab-list>
-  </ion-fab>
+  </ion-fab> -->
 </ion-content>

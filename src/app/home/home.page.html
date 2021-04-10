@@ -4,12 +4,20 @@
       slot="end"
       (click)="onMenuClick()"
       class="buttons-menu"
-      *ngIf="!HaveUpdate"
+      *ngIf="!HaveUpdate  && loading == false"
     >
-      <ion-icon class="icon-menu" name="chevron-up-circle-outline"></ion-icon>
+    <ion-icon class="icon-menu" name="settings-outline"></ion-icon>
     </ion-buttons>
-    <ion-title *ngIf="!HaveUpdate">Home - {{ activeRoom }}</ion-title>
-    <ion-title *ngIf="HaveUpdate">Home</ion-title>
+    <ion-buttons
+      slot="end"
+      class="buttons-menu"
+      (click)="onRoomClick()"
+      *ngIf="!HaveUpdate  && loading == false"
+    >
+    <ion-icon class="icon-menu" name="chevron-up-circle-outline"></ion-icon>
+    </ion-buttons>
+    <ion-title *ngIf="!HaveUpdate && !loading ">Home - {{ activeRoom }}</ion-title>
+    <ion-title *ngIf="HaveUpdate || loading">Home</ion-title>
   </ion-toolbar>
 </ion-header>
 

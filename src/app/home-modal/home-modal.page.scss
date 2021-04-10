@@ -58,7 +58,6 @@ ion-input{
     height: 50px;
     top: 14px;
     position: relative;
-    background: red;
     margin-left: 10px;
     border-radius: 10px;
     border:1px solid rgb(36, 36, 36);
@@ -74,6 +73,16 @@ ion-input{
   height: 80Px;
   overflow-y: scroll;
   white-space: nowrap;
+}
+
+.mid-item
+{
+  display: inline-block;
+  width: 15px;
+  height: 50px;
+  top: 14px;
+  position: relative;
+  border-radius: 10px;
 }
 
 ion-toggle {
