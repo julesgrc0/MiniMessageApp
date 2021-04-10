@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end" (click)="onMenuClick()" class="buttons-menu" *ngIf="!HaveUpdate">
+    <ion-buttons
+      slot="end"
+      (click)="onMenuClick()"
+      class="buttons-menu"
+      *ngIf="!HaveUpdate"
+    >
       <ion-icon class="icon-menu" name="chevron-up-circle-outline"></ion-icon>
     </ion-buttons>
     <ion-title *ngIf="!HaveUpdate">Home - {{ activeRoom }}</ion-title>
@@ -8,37 +13,54 @@
   </ion-toolbar>
 </ion-header>
 
-
-
 <ion-content [fullscreen]="true" *ngIf="!HaveUpdate">
   <div class="loader" *ngIf="loading">
-    <ion-spinner ></ion-spinner>
+    <ion-spinner></ion-spinner>
   </div>
   <div id="container" *ngIf="!loading">
     <div id="chatSection" #scrollBar>
-      <br>
+      <br />
       <div class="message-block" *ngFor="let message of messages">
-        <div class="message-l" *ngIf="!message.isMe" >
-          <div class="name" [style.color]="message.color" *ngIf="ShowUserTag" (click)="tagUser(message.username,message.userId)">
+        <div class="message-l" *ngIf="!message.isMe">
+          <div
+            class="name"
+            [style.color]="message.color"
+            *ngIf="ShowUserTag"
+            (click)="tagUser(message.username,message.userId)"
+          >
             @{{message.username}}
           </div>
-          <div class="content" [innerHTML]="message.MessageContent | messageRender">
-          </div>
+          <div
+            class="content"
+            [innerHTML]="message.MessageContent | messageRender"
+          ></div>
         </div>
 
         <div class="message-r" *ngIf="message.isMe">
-          <div class="name" [style.color]="ActiveUser.color" *ngIf="ShowSelfTag">
+          <div
+            class="name"
+            [style.color]="ActiveUser.color"
+            *ngIf="ShowSelfTag"
+          >
             @{{message.username}}
           </div>
-          <div class="content" [innerHTML]="message.MessageContent | messageRender">
-          </div>
+          <div
+            class="content"
+            [innerHTML]="message.MessageContent | messageRender"
+          ></div>
         </div>
       </div>
-      <br><br><bR><br><br><bR>
+      <br /><br /><br /><br /><br /><br />
     </div>
     <div id="bottomSection" *ngIf="!GiftViewActive">
-      <ion-input #messageElement (ionBlur)="onMessageBoxToggle($event)" class="message-box"
-        [(ngModel)]="MessageValue" placeholder="Envoyer un message" (keypress)="onKeyPress($event)"></ion-input>
+      <ion-input
+        #messageElement
+        (ionBlur)="onMessageBoxToggle($event)"
+        class="message-box"
+        [(ngModel)]="MessageValue"
+        placeholder="Envoyer un message"
+        (keypress)="onKeyPress($event)"
+      ></ion-input>
       <button class="btn-round" (click)="toggleGiftView()">
         <ion-icon name="gift-outline" class="gift-icon"></ion-icon>
       </button>
@@ -46,29 +68,72 @@
         <ion-icon name="send-outline" class="gift-icon"></ion-icon>
       </button>
     </div>
-    <div id="giftSection"  [@openClose]="GiftViewActive ? 'open' : 'closed'" [style.display]="GiftViewActive ? 'block' : 'none'">
+    <div
+      id="giftSection"
+      [@openClose]="GiftViewActive ? 'open' : 'closed'"
+      [style.display]="GiftViewActive ? 'block' : 'none'"
+    >
       <button class="btn-round-close" (click)="toggleGiftView()">
         <ion-icon name="close-outline" class="gift-icon"></ion-icon>
       </button>
       <div class="scrollSection">
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
+        <div class="card ion-activatable" >
+          <ion-icon name="image-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="battery-half-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="bulb-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="code-slash-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="call-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="game-controller-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
       </div>
       <div class="scrollSection">
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
-        <div class="card"></div>
+        <div class="card ion-activatable">
+          <ion-icon name="eye-off-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="help-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="location-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="megaphone-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="heart-half-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+        <div class="card ion-activatable">
+          <ion-icon name="qr-code-outline"></ion-icon>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
       </div>
     </div>
   </div>
 </ion-content>
 <ion-content [fullscreen]="true" *ngIf="HaveUpdate">
-  <p class="update">L'application n'est plus à jour merci de vérifier que vous avait bien installer la nouvelle version (v{{UpdateVersion}}) .</p>
+  <p class="update">
+    L'application n'est plus à jour merci de vérifier que vous avait bien
+    installer la nouvelle version (v{{UpdateVersion}}) .
+  </p>
 </ion-content>

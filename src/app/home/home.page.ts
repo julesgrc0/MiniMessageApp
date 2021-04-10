@@ -5,19 +5,19 @@ import {
   ViewChild,
   AfterViewChecked,
 } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { HomeModalPage } from '../home-modal/home-modal.page';
-import { ToastController } from '@ionic/angular';
-import { SettingsComponent } from '../settings/settings.component';
-import { ServerServiceComponent } from '../server-service/server-service.component';
-import { Keyboard } from '@ionic-native/keyboard/ngx';
 import {
   trigger,
   state,
   style,
   animate,
   transition,
+  keyframes,
 } from '@angular/animations';
+import { ModalController } from '@ionic/angular';
+import { HomeModalPage } from '../home-modal/home-modal.page';
+import { ToastController } from '@ionic/angular';
+import { SettingsComponent } from '../settings/settings.component';
+import { ServerServiceComponent } from '../server-service/server-service.component';
 export interface Message {
   username: string;
   userId: string;
@@ -36,24 +36,22 @@ export interface Message {
         'open',
         style({
           height: '200px',
-          zIndex: 100
+          zIndex: 100,
         })
       ),
       state(
         'closed',
         style({
           height: '80px',
-          zIndex:-1
+          zIndex: -1,
         })
       ),
-      transition('open => closed', [animate('0.2s')]),
+      transition('open => closed', [animate('0.3s')]),
       transition('closed => open', [animate('0.3s')]),
-    ]),
+    ])
   ],
-  providers: [Keyboard],
+  providers: [],
 })
-
-
 export class HomePage implements OnInit, AfterViewChecked {
   public GiftViewActive = false;
   public ShowSelfTag = true;
@@ -69,7 +67,7 @@ export class HomePage implements OnInit, AfterViewChecked {
   public HaveClose = false;
 
   public HaveUpdate = false;
-  public UpdateVersion: string = "";
+  public UpdateVersion: string = '';
 
   @ViewChild('messageElement') messageElement;
 
@@ -79,18 +77,17 @@ export class HomePage implements OnInit, AfterViewChecked {
     public modalController: ModalController,
     private settings: SettingsComponent,
     private server: ServerServiceComponent,
-    private toast: ToastController,
-    private keyboard: Keyboard
+    private toast: ToastController
   ) {}
 
   ngOnInit(): void {
-    this.server.hasUpdate().then(info=>{ 
-      if(info)
-      {
+    this.server.hasUpdate().then((info) => {
+      if (info) {
         this.UpdateVersion = info;
         this.HaveUpdate = true;
       }
-    })
+    });
+
     let options = this.settings.getSettings();
     this.setupOptions(options);
     this.activeRoom =
@@ -106,7 +103,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     });
   }
 
-  roomListenners() {    
+  roomListenners() {
     this.server.getSocket().on(this.activeRoom + ':close', (data) => {
       this.messages = [];
       this.activeRoom = data.room;
@@ -125,6 +122,14 @@ export class HomePage implements OnInit, AfterViewChecked {
         this.messages.push(message);
       }
     });
+
+    this.server.getSocket().on(this.activeRoom + ':image', (data) => {});
+  }
+
+  roomRemove() {
+    this.server.getSocket().off(this.activeRoom + ':message');
+    this.server.getSocket().off(this.activeRoom + ':close');
+    this.server.getSocket().off(this.activeRoom + ':image');
   }
 
   ngAfterViewChecked() {
@@ -194,17 +199,18 @@ export class HomePage implements OnInit, AfterViewChecked {
         this.server.setColor(value.color);
         hasChange = true;
       }
-      
-      if (this.HaveClose || value.room.toString() != this.activeRoom.toString()) {
-        if(this.HaveClose)
-        {
+
+      if (
+        this.HaveClose ||
+        value.room.toString() != this.activeRoom.toString()
+      ) {
+        if (this.HaveClose) {
           this.HaveClose = false;
         }
         this.messages = [];
         hasChange = true;
 
-        this.server.getSocket().off(this.activeRoom + ':message');
-        this.server.getSocket().off(this.activeRoom + ':close');
+        this.roomRemove();
         this.activeRoom = value.room;
         this.roomListenners();
       }
@@ -244,12 +250,10 @@ export class HomePage implements OnInit, AfterViewChecked {
     if (keep) {
       this.messageElement.setFocus();
     }
-    if(this.MessageValue != '') 
-    {
+    if (this.MessageValue != '') {
       this.server.sendMessage(this.activeRoom, this.MessageValue);
       this.MessageValue = '';
     }
-    
   }
 
   onMessageBoxToggle(e) {}

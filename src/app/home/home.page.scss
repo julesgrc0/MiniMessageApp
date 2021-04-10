@@ -154,11 +154,20 @@
   position: relative;
   top: 50%;
   width: 70px;
-  background: rgb(57, 57, 58);
+  background: rgb(58, 57, 58);
   margin-left: 10px;
   display: inline-block;
   border: 1px solid rgb(77, 77, 77);
   border-radius: 3px;
+  overflow: hidden;
+  ion-icon{
+    position: relative;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    height: 30px;
+    width: 30px;
+  }
 }
 
 #chatSection {
