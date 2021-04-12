@@ -82,14 +82,33 @@ export class HomePage implements OnInit, AfterViewChecked {
     private toast: ToastController,
     public platform: Platform
   ) {
-
     this.platform.ready().then((value) => {
+      this.loading = true;
       this.platform.pause.subscribe(() => {
-        this.messages = [];
-        this.roomRemove();
-        this.activeRoom = 0;
-        this.roomListenners();
-        this.server.getSocket().emit('room:kill', '');
+        if (this.activeRoom != 0) {
+          this.server.RoomExists(this.activeRoom).then((ok) => {
+            if (ok) 
+            {
+              this.roomRemove();
+              this.roomListenners();
+
+            } else 
+            {
+              this.presentToast('Cette Room a été fermer.');
+              this.messages = [];
+              this.roomRemove();
+              this.activeRoom = 0;
+              this.roomListenners();
+              this.server.getSocket().emit('room:kill', '');
+            }
+            this.loading = false;
+          });
+        } else {
+          this.roomRemove();
+          this.activeRoom = 0;
+          this.roomListenners();
+          this.loading = false;
+        }
       });
     });
   }
@@ -105,7 +124,6 @@ export class HomePage implements OnInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
-
     this.platform.backButton.subscribeWithPriority(9999, () => {
       document.addEventListener(
         'backbutton',
@@ -139,6 +157,7 @@ export class HomePage implements OnInit, AfterViewChecked {
       this.messages = [];
       this.activeRoom = data.room;
       this.HaveClose = true;
+      this.presentToast('Cette Room a été fermer.');
     });
 
     this.server.getSocket().on(this.activeRoom + ':message', (data) => {
@@ -181,9 +200,9 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.showToast = options.showToast != undefined ? options.showToast : true;
   }
 
-  async presentToast() {
+  async presentToast(message) {
     const toast = await this.toast.create({
-      message: 'Vos paramètres ont été enregistrés.',
+      message: message,
       duration: 2000,
       position: 'top',
       animated: true,
@@ -284,7 +303,7 @@ export class HomePage implements OnInit, AfterViewChecked {
       }
 
       if (hasChange && this.showToast) {
-        this.presentToast();
+        this.presentToast('Vos paramètres ont été enregistrés.');
       }
     });
   }

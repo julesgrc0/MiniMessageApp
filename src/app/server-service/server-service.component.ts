@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ServerServiceComponent {
 
-  private APP_VERSION: string = "6.1.2";
+  private APP_VERSION: string = "6.3.5";
   private ServerURL: string = 'https://send-server-api.herokuapp.com/';
   
   private socket: any;
@@ -32,6 +32,18 @@ export class ServerServiceComponent {
         resolve(this.User);
       });
     });
+  }
+
+  RoomExists(roomName): Promise<boolean> 
+  {
+    return new Promise<boolean>((resolve, reject) => 
+    {
+      this.socket.emit('room:exists',roomName);
+      this.socket.off('exists')
+      this.socket.on('exists',(res:boolean) =>{
+        resolve(res);
+      })
+    })
   }
 
   hasUpdate(): Promise<any> 
