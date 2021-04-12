@@ -19,12 +19,21 @@ import { ToastController } from '@ionic/angular';
 import { SettingsComponent } from '../settings/settings.component';
 import { ServerServiceComponent } from '../server-service/server-service.component';
 import { ModalRoomPage } from '../modal-room/modal-room.page';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  DialogGiftComponent,
+  GiftDialogData,
+  GiftType,
+} from '../dialog-gift/dialog-gift.component';
+import {DomSanitizer} from '@angular/platform-browser';
+
 export interface Message {
   username: string;
   userId: string;
   MessageContent: string;
   isMe: boolean;
   color: string;
+  isImage: boolean;
 }
 
 @Component({
@@ -58,6 +67,7 @@ export class HomePage implements OnInit, AfterViewChecked {
   public ShowSelfTag = true;
   public ShowUserTag = true;
   private showToast = true;
+  public showCloseToast = true;
 
   public messages: Message[] = [];
   public MessageValue: string = '';
@@ -80,20 +90,19 @@ export class HomePage implements OnInit, AfterViewChecked {
     private settings: SettingsComponent,
     private server: ServerServiceComponent,
     private toast: ToastController,
-    public platform: Platform
+    public platform: Platform,
+    public dialog: MatDialog,
+    public sanitizer: DomSanitizer,
   ) {
     this.platform.ready().then((value) => {
       this.loading = true;
       this.platform.pause.subscribe(() => {
         if (this.activeRoom != 0) {
           this.server.RoomExists(this.activeRoom).then((ok) => {
-            if (ok) 
-            {
+            if (ok) {
               this.roomRemove();
               this.roomListenners();
-
-            } else 
-            {
+            } else {
               this.presentToast('Cette Room a été fermer.');
               this.messages = [];
               this.roomRemove();
@@ -157,7 +166,11 @@ export class HomePage implements OnInit, AfterViewChecked {
       this.messages = [];
       this.activeRoom = data.room;
       this.HaveClose = true;
-      this.presentToast('Cette Room a été fermer.');
+      if(this.showCloseToast)
+      {
+        this.presentToast('Cette Room a été fermer.');
+      }
+      
     });
 
     this.server.getSocket().on(this.activeRoom + ':message', (data) => {
@@ -168,12 +181,92 @@ export class HomePage implements OnInit, AfterViewChecked {
           MessageContent: data.message,
           color: data.color,
           isMe: this.ActiveUser.userId == data.id ? true : false,
+          isImage:false
         };
         this.messages.push(message);
       }
     });
 
-    this.server.getSocket().on(this.activeRoom + ':image', (data) => {});
+    this.server.getSocket().on(this.activeRoom + ':image', (data) => {
+      if (data.room === this.activeRoom) {
+        let message: Message = {
+          username: data.username,
+          userId: data.id,
+          MessageContent: data.message,
+          color: data.color,
+          isMe: this.ActiveUser.userId == data.id ? true : false,
+          isImage:true
+        };
+
+        this.messages.push(message);
+      }
+    });
+  }
+
+  openGiftDialog(type: string) {
+    this.GiftViewActive = false;
+    let giftType: GiftType = GiftType.IMAGE;
+    switch (type) {
+      case 'IMAGE':
+        giftType = GiftType.IMAGE;
+        break;
+      case 'BATTERY':
+        giftType = GiftType.BATTERY;
+        break;
+      case 'IDEA':
+        giftType = GiftType.IDEA;
+        break;
+      case 'CODE':
+        giftType = GiftType.CODE;
+        break;
+      case 'PHONE':
+        giftType = GiftType.PHONE;
+        break;
+      case 'GAME':
+        giftType = GiftType.GAME;
+        break;
+      case 'HIDDEN':
+        giftType = GiftType.HIDDEN;
+        break;
+      case 'QUESTION':
+        giftType = GiftType.QUESTION;
+        break;
+      case 'LOCATION':
+        giftType = GiftType.LOCATION;
+        break;
+      case 'INFO':
+        giftType = GiftType.INFO;
+        break;
+      case 'LOVE':
+        giftType = GiftType.LOVE;
+        break;
+      case 'QR_CODE':
+        giftType = GiftType.QR_CODE;
+        break;
+    }
+
+    const dialogRef = this.dialog.open(DialogGiftComponent, {
+      data: {
+        type: giftType,
+        username: this.ActiveUser.username,
+        color: this.ActiveUser.color,
+        room: this.activeRoom,
+      },
+      id: 'giftDialog',
+    });
+
+    dialogRef.afterClosed().subscribe((data: GiftDialogData | undefined) => {
+      if (data != undefined) 
+      {
+        this.server.getSocket().emit('user:image',{
+          room: this.activeRoom,
+          username: this.ActiveUser.username,
+          id: this.ActiveUser.userId,
+          message: data.outputMessage,
+          color: this.ActiveUser.color,
+        });
+      }
+    });
   }
 
   roomRemove() {
@@ -198,6 +291,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.ShowUserTag =
       options.showUsersTag != undefined ? options.showUsersTag : true;
     this.showToast = options.showToast != undefined ? options.showToast : true;
+    this.showCloseToast = options.showCloseToast != undefined ? options.showCloseToast : true;
   }
 
   async presentToast(message) {

@@ -39,7 +39,10 @@
     <p>Message de confirmation de sauvegarde</p>
     <ion-toggle [(ngModel)]="options.showToast"></ion-toggle>
   </div>
-
+  <div class="action-section">
+    <p>Message quand une Room se ferme</p>
+    <ion-toggle [(ngModel)]="options.showCloseToast"></ion-toggle>
+  </div>
   <!-- <ion-fab horizontal="end" vertical="bottom" slot="fixed">
     <ion-fab-button color="dark">
       <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>

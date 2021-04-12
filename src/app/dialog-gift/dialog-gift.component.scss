@@ -1,0 +1,53 @@
+div {
+  position: relative;
+  width: 200Px;
+  min-height: 10px;
+  padding-bottom: 60px;
+
+  .btn-close,
+  .btn-check {
+    position: absolute;
+    bottom: 0px;
+    padding: 6px 13px;
+    border-radius: 3px;
+    background: #131313;
+    color: #f1f1f1;
+    outline: none;
+
+    ion-icon {
+      height: 18px;
+      width: 18px;
+    }
+
+    &:disabled{
+      opacity: 0.5;
+    }
+  }
+
+  .btn-check {
+    right: 0px;
+  }
+
+  .btn-close {
+    left: 0px;
+  }
+
+  .btn {
+    overflow:hidden;
+    padding: {
+      left: 18px;
+      right: 18px;
+      top: 11px;
+      bottom: 11px;
+    };
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 7px;
+    background: #5f5e5e;
+    color: #fff;
+    position: relative;
+    outline: none;
+    transition: 0.5s;
+  }
+}

@@ -18,13 +18,12 @@ import { CommonModule } from '@angular/common';
 import { HomeModalPageModule } from './home-modal/home-modal.module';
 import { ModalRoomPageModule } from './modal-room/modal-room.module';
 import { HttpClientModule } from '@angular/common/http';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { DialogRoomComponent } from './dialog-room/dialog-room.component';
+import { DialogGiftComponent } from './dialog-gift/dialog-gift.component';
+
 @NgModule({
-  declarations: [
-    AppComponent,
-    DialogRoomComponent
-  ],
+  declarations: [AppComponent, DialogRoomComponent, DialogGiftComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -39,12 +38,12 @@ import { DialogRoomComponent } from './dialog-room/dialog-room.component';
     MatDialogModule,
   ],
   providers: [
-    { 
+    {
       provide: RouteReuseStrategy,
-      useClass: IonicRouteStrategy
+      useClass: IonicRouteStrategy,
     },
     SettingsComponent,
-    ServerServiceComponent
+    ServerServiceComponent,
   ],
   bootstrap: [AppComponent],
 })

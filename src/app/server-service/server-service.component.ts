@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ServerServiceComponent {
 
-  private APP_VERSION: string = "6.3.5";
+  private APP_VERSION: string = "6.5.1";
   private ServerURL: string = 'https://send-server-api.herokuapp.com/';
   
   private socket: any;

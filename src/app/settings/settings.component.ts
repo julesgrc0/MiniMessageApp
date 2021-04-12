@@ -18,7 +18,8 @@ export class SettingsComponent {
           showSelfTag:true,
           showToast:true,
           defaultRoom: 0,
-          userName:'default'
+          userName:'default',
+          showCloseToast:true
         })
       );
     }

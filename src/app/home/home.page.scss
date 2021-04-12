@@ -49,7 +49,7 @@
   position: relative;
   transition: all 0.4s;
   margin-left: 5px;
-  margin-right:10px;
+  margin-right: 10px;
 }
 
 .buttons-menu:active {
@@ -162,9 +162,10 @@
   border: 1px solid rgb(77, 77, 77);
   border-radius: 3px;
   overflow: hidden;
-  ion-icon{
+
+  ion-icon {
     position: relative;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     top: 50%;
     left: 50%;
     height: 30px;
@@ -215,6 +216,18 @@
     background: rgba(56, 56, 56, 0.616);
     border-radius: 3Px;
   }
+
+  .image-content {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: rgba(56, 56, 56, 0.616);
+    border-radius: 3Px;
+    img
+    {
+      border-radius: 3px;
+      width: 100%;
+    }
+  }
 }
 
 .message-r {
@@ -240,6 +253,18 @@
     padding: 8px 10px;
     background: rgba(56, 56, 56, 0.616);
     border-radius: 3Px;
+  }
+
+  .image-content {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: rgba(56, 56, 56, 0.616);
+    border-radius: 3Px;
+    img
+    {
+      border-radius: 3px;
+      width: 100%;
+    }
   }
 }
 
