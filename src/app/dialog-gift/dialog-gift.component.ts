@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ImagePicker } from '@ionic-native/image-picker/ngx';
+import { ImagePicker, ImagePickerOptions } from '@ionic-native/image-picker/ngx';
 import { Base64 } from '@ionic-native/base64/ngx';
 
 export enum GiftType {
@@ -52,12 +52,15 @@ export class DialogGiftComponent implements OnInit {
   }
 
   openImage() {
-    let options = {
+    let options:ImagePickerOptions = {
+      quality:40,
       maximumImagesCount: 1,
+      width:144,
+      height:81,
+      allow_video:false,
       title: 'Choisissez une image à envoyer',
-      width: 1920,
-      height: 1080,
     };
+
     this.imagePicker.getPictures(options).then((results) => {
       for (var i = 0; i < results.length; i++) {
         let res = results[i];
@@ -68,7 +71,7 @@ export class DialogGiftComponent implements OnInit {
               this.data.outputMessage = base64File;
               this.isFinish = true;
             })
-            .catch((err) => {});
+            .catch((err) =>{});
         }
       }
     });
