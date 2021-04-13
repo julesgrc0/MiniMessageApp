@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ServerServiceComponent {
 
-  private APP_VERSION: string = "6.5.1";
+  private APP_VERSION: string = "7.0.1";
   private ServerURL: string = 'https://send-server-api.herokuapp.com/';
   
   private socket: any;
@@ -43,6 +43,34 @@ export class ServerServiceComponent {
       this.socket.on('exists',(res:boolean) =>{
         resolve(res);
       })
+    })
+  }
+
+  getImage(url)
+  {
+    return new Promise<any>((resolve, reject) => {
+      this.http.get(url).toPromise().then((response:any)=>{
+        if(response)
+        {
+          if(!response.error)
+          {
+            resolve(response.value);
+          }else{
+            resolve(false)
+          }
+        }else{
+          resolve(false)
+        }
+      })
+    })
+  }
+
+  sendImage(token,image): Promise<any> 
+  {
+    return new Promise<any>((resolve, reject) => {
+      this.http.post<any>(this.ServerURL+"image",{image:image,token:token}).toPromise().then((data)=>{
+        resolve(data);
+      }).catch(err=>resolve(err));
     })
   }
 

@@ -168,7 +168,7 @@ export class HomePage implements OnInit, AfterViewChecked {
       this.HaveClose = true;
       if(this.showCloseToast)
       {
-        this.presentToast('Cette Room a été fermer.');
+        this.presentToast('Room fermer, redirection vers Home-0.');
       }
       
     });
@@ -188,17 +188,24 @@ export class HomePage implements OnInit, AfterViewChecked {
     });
 
     this.server.getSocket().on(this.activeRoom + ':image', (data) => {
-      if (data.room === this.activeRoom) {
-        let message: Message = {
-          username: data.username,
-          userId: data.id,
-          MessageContent: data.message,
-          color: data.color,
-          isMe: this.ActiveUser.userId == data.id ? true : false,
-          isImage:true
-        };
-
-        this.messages.push(message);
+      if (data.room === this.activeRoom) 
+      {
+        this.server.getImage(data.message).then(image => {
+          if(image)
+          {
+              let message: Message = {
+                username: data.username,
+                userId: data.id,
+                MessageContent: image,
+                color: data.color,
+                isMe: this.ActiveUser.userId == data.id ? true : false,
+                isImage:true
+              };
+      
+              this.messages.push(message);
+            }
+          
+        })
       }
     });
   }
@@ -258,13 +265,11 @@ export class HomePage implements OnInit, AfterViewChecked {
     dialogRef.afterClosed().subscribe((data: GiftDialogData | undefined) => {
       if (data != undefined) 
       {
-        this.server.getSocket().emit('user:image',{
-          room: this.activeRoom,
-          username: this.ActiveUser.username,
-          id: this.ActiveUser.userId,
-          message: data.outputMessage,
-          color: this.ActiveUser.color,
-        });
+        this.server.getSocket().emit('user:image',{room: this.activeRoom});
+        this.server.getSocket().on('user:token',(token=>{
+            this.server.sendImage(token,data.outputMessage);
+            this.server.getSocket().off('user:token');
+        }))
       }
     });
   }
