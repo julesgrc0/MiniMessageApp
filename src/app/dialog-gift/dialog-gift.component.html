@@ -11,6 +11,7 @@
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 1">
   <button class="btn-check" (click)="close()">
     <ion-icon name="checkmark-outline"></ion-icon>
@@ -19,7 +20,10 @@
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 2">
+  <p>Envoyer une idée ou une citation</p>
+  <ion-textarea rows="8" cols="40" maxlength="500" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-textarea>
   <button class="btn-check" (click)="close()">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
@@ -27,7 +31,10 @@
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 3">
+  <p>Envoyer du code</p>
+  <ion-textarea rows="8" cols="40" maxlength="1500" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-textarea>
   <button class="btn-check" (click)="close()">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>

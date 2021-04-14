@@ -43,7 +43,7 @@
       <br /><br /><br /><br /><br /><br />
     </div>
     <div id="bottomSection" *ngIf="!GiftViewActive">
-      <ion-input #messageElement (ionBlur)="onMessageBoxToggle($event)" class="message-box" [(ngModel)]="MessageValue"
+      <ion-input #messageElement (ionBlur)="onMessageBoxToggle($event)" maxlength="1000" class="message-box" [(ngModel)]="MessageValue"
         placeholder="Envoyer un message" inputmode="text" autocorrect="off" (keypress)="onKeyPress($event)"></ion-input>
       <button class="btn-round" (click)="toggleGiftView()">
         <ion-icon name="gift-outline" class="gift-icon"></ion-icon>

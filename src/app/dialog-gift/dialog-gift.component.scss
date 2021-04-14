@@ -1,9 +1,14 @@
 div {
   position: relative;
-  width: 200Px;
+  width: 100%;
   min-height: 10px;
   padding-bottom: 60px;
-
+  p{
+    margin:0px;
+    margin: {
+      bottom:10px;
+    };
+  }
   .btn-close,
   .btn-check {
     position: absolute;
@@ -50,4 +55,11 @@ div {
     outline: none;
     transition: 0.5s;
   }
+
+  
+}
+
+ion-textarea {
+  background: #131313;
+  border-radius: 3px;
 }

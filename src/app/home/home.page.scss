@@ -70,12 +70,12 @@
 
 .message-box {
   border-radius: 3px;
-  top: 2Px;
+  top: 12Px;
   left: 65Px;
   background: rgba(58, 58, 58, 0.829);
   position: relative;
   width: calc(100% - 140px);
-  border: 1px solid rgb(77, 77, 77);
+  // border: 1px solid rgb(77, 77, 77);
 }
 
 .btn-round {
@@ -84,12 +84,12 @@
   justify-content: center;
   position: absolute;
   left: 10px;
-  top: 2Px;
+  top: 12Px;
   height: 42px;
   width: 42px;
   border-radius: 50%;
   outline: none;
-  border: 1px solid rgb(77, 77, 77);
+  // border: 1px solid rgb(77, 77, 77);
   background: rgba(58, 58, 58, 0.829);
   transition: 0.5s;
 }
@@ -100,13 +100,13 @@
   justify-content: center;
   position: absolute;
   right: 10px;
-  top: 2Px;
+  top: 12Px;
   height: 42px;
   width: 42px;
   border-radius: 50%;
   outline: none;
 
-  border: 1px solid rgb(77, 77, 77);
+  // border: 1px solid rgb(77, 77, 77);
   background: rgba(58, 58, 58, 0.829);
   transition: 0.1s;
 }
@@ -136,7 +136,7 @@
   width: 38px;
   border-radius: 30%;
   outline: none;
-  border: 1px solid rgb(77, 77, 77);
+  // border: 1px solid rgb(77, 77, 77);
   background: rgba(58, 58, 58, 0.829);
   transition: 0.5s;
 }

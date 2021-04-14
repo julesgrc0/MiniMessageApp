@@ -251,6 +251,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     }
 
     const dialogRef = this.dialog.open(DialogGiftComponent, {
+      width:'60%',
       data: {
         type: giftType,
         username: this.ActiveUser.username,
@@ -262,12 +263,19 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     dialogRef.afterClosed().subscribe((data: GiftDialogData | undefined) => {
       if (data != undefined) {
-        this.server.getSocket().emit('user:image', { room: this.activeRoom });
-        this.server.getSocket().on('user:token', (token) => 
+
+        if(data.type == GiftType.IMAGE)
         {
-          this.server.sendImage(token, data.outputMessage);
-          this.server.getSocket().off('user:token');
-        });
+          this.server.getSocket().emit('user:image', { room: this.activeRoom });
+          this.server.getSocket().on('user:token', (token) => 
+          {
+            this.server.sendImage(token, data.outputMessage);
+            this.server.getSocket().off('user:token');
+          });
+        }else if(data.type == GiftType.IDEA || data.type == GiftType.CODE)
+        {
+          this.server.sendMessage(this.activeRoom,data.outputMessage);
+        }
       }
     });
   }

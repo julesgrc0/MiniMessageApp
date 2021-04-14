@@ -33,6 +33,7 @@ export interface GiftDialogData {
 })
 export class DialogGiftComponent implements OnInit {
   public isFinish = false;
+  public textContent: string = '';
 
   constructor(
     public dialogRef: MatDialogRef<DialogGiftComponent>,
@@ -48,6 +49,31 @@ export class DialogGiftComponent implements OnInit {
       this.dialogRef.close(undefined);
     } else {
       this.dialogRef.close(this.data);
+    }
+  }
+
+  onTextChange()
+  {
+    if(this.data.type == GiftType.IDEA)
+    {
+      if(this.textContent.length > 0 && this.textContent.length <= 500)
+      {
+        this.data.outputMessage = "| "+this.textContent+" |";
+        this.isFinish = true;
+      }else
+      {
+        this.isFinish = false;
+      }
+    }else if(this.data.type == GiftType.CODE)
+    {
+      if(this.textContent.length > 0 && this.textContent.length <= 1500)
+      {
+        this.data.outputMessage = "_code_ "+this.textContent+" _code_";
+        this.isFinish = true;
+      }else
+      {
+        this.isFinish = false;
+      }
     }
   }
 
