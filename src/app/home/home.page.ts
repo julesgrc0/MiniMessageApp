@@ -5,6 +5,7 @@ import {
   ViewChild,
   AfterViewChecked,
 } from '@angular/core';
+
 import {
   trigger,
   state,
@@ -12,6 +13,13 @@ import {
   animate,
   transition,
 } from '@angular/animations';
+
+import {
+  DialogGiftComponent,
+  GiftDialogData,
+  GiftType,
+} from '../dialog-gift/dialog-gift.component';
+
 import { Platform } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { HomeModalPage } from '../home-modal/home-modal.page';
@@ -20,12 +28,7 @@ import { SettingsComponent } from '../settings/settings.component';
 import { ServerServiceComponent } from '../server-service/server-service.component';
 import { ModalRoomPage } from '../modal-room/modal-room.page';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  DialogGiftComponent,
-  GiftDialogData,
-  GiftType,
-} from '../dialog-gift/dialog-gift.component';
-import {DomSanitizer} from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 
 export interface Message {
   username: string;
@@ -92,7 +95,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     private toast: ToastController,
     public platform: Platform,
     public dialog: MatDialog,
-    public sanitizer: DomSanitizer,
+    public sanitizer: DomSanitizer
   ) {
     this.platform.ready().then((value) => {
       this.loading = true;
@@ -103,7 +106,7 @@ export class HomePage implements OnInit, AfterViewChecked {
               this.roomRemove();
               this.roomListenners();
             } else {
-              this.presentToast('Cette Room a été fermer.');
+              this.presentToast('La Room a été fermer');
               this.messages = [];
               this.roomRemove();
               this.activeRoom = 0;
@@ -166,11 +169,9 @@ export class HomePage implements OnInit, AfterViewChecked {
       this.messages = [];
       this.activeRoom = data.room;
       this.HaveClose = true;
-      if(this.showCloseToast)
-      {
-        this.presentToast('Room fermer, redirection vers Home-0.');
+      if (this.showCloseToast) {
+        this.presentToast('La Room a été fermer');
       }
-      
     });
 
     this.server.getSocket().on(this.activeRoom + ':message', (data) => {
@@ -181,31 +182,28 @@ export class HomePage implements OnInit, AfterViewChecked {
           MessageContent: data.message,
           color: data.color,
           isMe: this.ActiveUser.userId == data.id ? true : false,
-          isImage:false
+          isImage: false,
         };
         this.messages.push(message);
       }
     });
 
     this.server.getSocket().on(this.activeRoom + ':image', (data) => {
-      if (data.room === this.activeRoom) 
-      {
-        this.server.getImage(data.message).then(image => {
-          if(image)
-          {
-              let message: Message = {
-                username: data.username,
-                userId: data.id,
-                MessageContent: image,
-                color: data.color,
-                isMe: this.ActiveUser.userId == data.id ? true : false,
-                isImage:true
-              };
-      
-              this.messages.push(message);
-            }
-          
-        })
+      if (data.room === this.activeRoom) {
+        this.server.getImage(data.message).then((image) => {
+          if (image) {
+            let message: Message = {
+              username: data.username,
+              userId: data.id,
+              MessageContent: image,
+              color: data.color,
+              isMe: this.ActiveUser.userId == data.id ? true : false,
+              isImage: true,
+            };
+
+            this.messages.push(message);
+          }
+        });
       }
     });
   }
@@ -263,13 +261,13 @@ export class HomePage implements OnInit, AfterViewChecked {
     });
 
     dialogRef.afterClosed().subscribe((data: GiftDialogData | undefined) => {
-      if (data != undefined) 
-      {
-        this.server.getSocket().emit('user:image',{room: this.activeRoom});
-        this.server.getSocket().on('user:token',(token=>{
-            this.server.sendImage(token,data.outputMessage);
-            this.server.getSocket().off('user:token');
-        }))
+      if (data != undefined) {
+        this.server.getSocket().emit('user:image', { room: this.activeRoom });
+        this.server.getSocket().on('user:token', (token) => 
+        {
+          this.server.sendImage(token, data.outputMessage);
+          this.server.getSocket().off('user:token');
+        });
       }
     });
   }
@@ -296,7 +294,8 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.ShowUserTag =
       options.showUsersTag != undefined ? options.showUsersTag : true;
     this.showToast = options.showToast != undefined ? options.showToast : true;
-    this.showCloseToast = options.showCloseToast != undefined ? options.showCloseToast : true;
+    this.showCloseToast =
+      options.showCloseToast != undefined ? options.showCloseToast : true;
   }
 
   async presentToast(message) {
@@ -339,6 +338,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         this.roomRemove();
         this.activeRoom = data.data.room;
         this.roomListenners();
+        this.server.getSocket().emit('user:select',data.data.room);
       }
     });
   }
