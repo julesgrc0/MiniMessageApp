@@ -37,6 +37,7 @@ export interface Message {
   isMe: boolean;
   color: string;
   isImage: boolean;
+  isInfoMessage: boolean;
 }
 
 @Component({
@@ -165,6 +166,30 @@ export class HomePage implements OnInit, AfterViewChecked {
   }
 
   roomListenners() {
+
+    this.server.getSocket().on(this.activeRoom + ':join',(newUser)=>{
+      let enterMessages = [
+        '{user} nous a rejoint !',
+        'Souhaiter la bienvenue a {user} !',
+        '{user} revient de loing !',
+        '{user} s\'ajoute a la conversation',
+        'Un {user} sauvage apparait !',
+        '{user} survient dans la Room'
+      ];
+      let messageValue = enterMessages[Math.floor(Math.random() * enterMessages.length)].replace('{user}', newUser.username);
+      let newUserinfo:Message = 
+      {
+        username: newUser.username,
+        userId: newUser.id,
+        MessageContent:messageValue,
+        isMe:false,
+        color:'#dcdcdc',
+        isImage:false,
+        isInfoMessage:true,
+      };
+      this.messages.push(newUserinfo);
+    });
+
     this.server.getSocket().on(this.activeRoom + ':close', (data) => {
       this.messages = [];
       this.activeRoom = data.room;
@@ -183,6 +208,7 @@ export class HomePage implements OnInit, AfterViewChecked {
           color: data.color,
           isMe: this.ActiveUser.userId == data.id ? true : false,
           isImage: false,
+          isInfoMessage:false,
         };
         this.messages.push(message);
       }
@@ -199,6 +225,7 @@ export class HomePage implements OnInit, AfterViewChecked {
               color: data.color,
               isMe: this.ActiveUser.userId == data.id ? true : false,
               isImage: true,
+              isInfoMessage:false,
             };
 
             this.messages.push(message);
@@ -284,6 +311,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.server.getSocket().off(this.activeRoom + ':message');
     this.server.getSocket().off(this.activeRoom + ':close');
     this.server.getSocket().off(this.activeRoom + ':image');
+    this.server.getSocket().off(this.activeRoom + ':join');
   }
 
   ngAfterViewChecked() {

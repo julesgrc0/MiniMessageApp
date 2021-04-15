@@ -44,7 +44,8 @@ export class DialogGiftComponent implements OnInit {
 
   ngOnInit() {}
 
-  close(stop = false) {
+  close(stop = false) 
+  {
     if (stop) {
       this.dialogRef.close(undefined);
     } else {
@@ -68,7 +69,7 @@ export class DialogGiftComponent implements OnInit {
     {
       if(this.textContent.length > 0 && this.textContent.length <= 1500)
       {
-        this.data.outputMessage = "_code_ "+this.textContent+" _code_";
+        // this.data.outputMessage = "_code_ "+this.textContent+" _code_";
         this.isFinish = true;
       }else
       {
@@ -79,10 +80,39 @@ export class DialogGiftComponent implements OnInit {
 
   openImage() {
     let options:ImagePickerOptions = {
-      quality:40,
+      quality:100,
       maximumImagesCount: 1,
-      width:144,
-      height:81,
+      /*
+      // 2160p
+        width:3840, 
+        height:2160,
+
+      // 1440p
+        width:2560, 
+        height:1440,
+
+      // 1080p
+        width:1920, 
+        height:1080,
+      
+      // 720p
+        width:1280, 
+        height:720,
+
+      // 480p
+        width:854, 
+        height:480,
+
+      // 360p
+        width:640, 
+        height:360,
+
+      // 240p
+        width:426, 
+        height:240, 
+      */
+      width:720, 
+      height:1280,
       allow_video:false,
       title: 'Choisissez une image à envoyer',
     };

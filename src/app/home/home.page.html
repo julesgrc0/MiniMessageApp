@@ -20,13 +20,23 @@
       <br />
       <div class="message-block" *ngFor="let message of messages">
         <div class="message-l" *ngIf="!message.isMe">
-          <div class="name" [style.color]="message.color" *ngIf="ShowUserTag"
+          
+          <div class="name" [style.color]="message.color" *ngIf="ShowUserTag && !message.isInfoMessage"
             (click)="tagUser(message.username,message.userId)">
             @{{message.username}}
           </div>
-          <div *ngIf="!message.isImage" class="content" [innerHTML]="message.MessageContent | messageRender"></div>
-          <div class="image-content" *ngIf="message.isImage">
+          <div class="name-icon" *ngIf="message.isInfoMessage" (click)="tagUser(message.username,message.userId)">
+            <ion-icon name="information-circle" class="icon-information"></ion-icon> 
+          </div>
+          
+          <div *ngIf="!message.isImage && !message.isInfoMessage" class="content" [innerHTML]="message.MessageContent | messageRender"></div>
+          
+          <div class="image-content" *ngIf="message.isImage && !message.isInfoMessage">
             <img [src]="sanitizer.bypassSecurityTrustUrl(message.MessageContent)" alt=" Une erreur est survenue au chargement de l'image">
+          </div>
+
+          <div class="new-user" [style.color]="message.color" *ngIf="message.isInfoMessage && !message.isImage">
+            {{ message.MessageContent }}
           </div>
         </div>
 
