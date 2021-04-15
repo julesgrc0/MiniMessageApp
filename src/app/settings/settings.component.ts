@@ -19,7 +19,8 @@ export class SettingsComponent {
           showToast:true,
           defaultRoom: 0,
           userName:'default',
-          showCloseToast:true
+          showCloseToast:true,
+          showNewUser:true,
         })
       );
     }

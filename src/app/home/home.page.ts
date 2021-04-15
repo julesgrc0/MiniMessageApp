@@ -72,6 +72,7 @@ export class HomePage implements OnInit, AfterViewChecked {
   public ShowUserTag = true;
   private showToast = true;
   public showCloseToast = true;
+  public showNewUser = true;
 
   public messages: Message[] = [];
   public MessageValue: string = '';
@@ -99,29 +100,21 @@ export class HomePage implements OnInit, AfterViewChecked {
     public sanitizer: DomSanitizer
   ) {
     this.platform.ready().then((value) => {
-      this.loading = true;
-      this.platform.pause.subscribe(() => {
-        if (this.activeRoom != 0) {
-          this.server.RoomExists(this.activeRoom).then((ok) => {
-            if (ok) {
-              this.roomRemove();
-              this.roomListenners();
-            } else {
-              this.presentToast('La Room a été fermer');
-              this.messages = [];
-              this.roomRemove();
-              this.activeRoom = 0;
-              this.roomListenners();
-              this.server.getSocket().emit('room:kill', '');
-            }
-            this.loading = false;
-          });
-        } else {
-          this.roomRemove();
-          this.activeRoom = 0;
-          this.roomListenners();
+      this.platform.resume.subscribe(() => {
+        this.presentToast('Reconnection a la Room...', 1000, 'globe-outline');
+        this.loading = true;
+        this.messages = [];
+
+        this.server.RoomExists(this.activeRoom).then((ok) => {
+          if (!ok) {
+            this.presentToast('La Room a été fermer');
+            this.roomRemove();
+            this.activeRoom = 0;
+            this.roomListenners();
+            this.server.getSocket().emit('room:kill', '');
+          }
           this.loading = false;
-        }
+        });
       });
     });
   }
@@ -166,28 +159,36 @@ export class HomePage implements OnInit, AfterViewChecked {
   }
 
   roomListenners() {
-
-    this.server.getSocket().on(this.activeRoom + ':join',(newUser)=>{
-      let enterMessages = [
-        '{user} nous a rejoint !',
-        'Souhaiter la bienvenue a {user} !',
-        '{user} revient de loing !',
-        '{user} s\'ajoute a la conversation',
-        'Un {user} sauvage apparait !',
-        '{user} survient dans la Room'
-      ];
-      let messageValue = enterMessages[Math.floor(Math.random() * enterMessages.length)].replace('{user}', newUser.username);
-      let newUserinfo:Message = 
-      {
-        username: newUser.username,
-        userId: newUser.id,
-        MessageContent:messageValue,
-        isMe:false,
-        color:'#dcdcdc',
-        isImage:false,
-        isInfoMessage:true,
-      };
-      this.messages.push(newUserinfo);
+    this.server.getSocket().on(this.activeRoom + ':join', (newUser) => {
+      if (this.showNewUser) {
+        let enterMessages = [
+          'Bienvenue à {user} !',
+          'Souhaiter la bienvenue à {user} !',
+          'Un {user} sauvage apparaît  !',
+          '{user} nous a rejoint !',
+          '{user} revient de loin !',
+          "{user} s'ajoute à la conversation",
+          '{user} survient dans la Room',
+          '{user} rejoint la Room',
+          '{user} apparait 🥳',
+          '{user} est en 🔥',
+          '{user} apporte de la pizza 🍕',
+          "{user} vient s'ajoute discrètement dans la Room 👀",
+        ];
+        let messageValue = enterMessages[
+          Math.floor(Math.random() * enterMessages.length)
+        ].replace('{user}', '@' + newUser.username);
+        let newUserinfo: Message = {
+          username: newUser.username,
+          userId: newUser.id,
+          MessageContent: messageValue,
+          isMe: false,
+          color: '#dcdcdc',
+          isImage: false,
+          isInfoMessage: true,
+        };
+        this.messages.push(newUserinfo);
+      }
     });
 
     this.server.getSocket().on(this.activeRoom + ':close', (data) => {
@@ -208,9 +209,14 @@ export class HomePage implements OnInit, AfterViewChecked {
           color: data.color,
           isMe: this.ActiveUser.userId == data.id ? true : false,
           isImage: false,
-          isInfoMessage:false,
+          isInfoMessage: false,
         };
         this.messages.push(message);
+
+        if (this.messages.length > 100) 
+        {
+          this.messages = this.messages.slice(0, 50);
+        }
       }
     });
 
@@ -225,10 +231,14 @@ export class HomePage implements OnInit, AfterViewChecked {
               color: data.color,
               isMe: this.ActiveUser.userId == data.id ? true : false,
               isImage: true,
-              isInfoMessage:false,
+              isInfoMessage: false,
             };
 
             this.messages.push(message);
+            if (this.messages.length > 100) 
+            {
+              this.messages = this.messages.slice(0, 50);
+            }
           }
         });
       }
@@ -278,7 +288,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     }
 
     const dialogRef = this.dialog.open(DialogGiftComponent, {
-      width:'60%',
+      width: '60%',
       data: {
         type: giftType,
         username: this.ActiveUser.username,
@@ -290,18 +300,14 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     dialogRef.afterClosed().subscribe((data: GiftDialogData | undefined) => {
       if (data != undefined) {
-
-        if(data.type == GiftType.IMAGE)
-        {
+        if (data.type == GiftType.IMAGE) {
           this.server.getSocket().emit('user:image', { room: this.activeRoom });
-          this.server.getSocket().on('user:token', (token) => 
-          {
+          this.server.getSocket().on('user:token', (token) => {
             this.server.sendImage(token, data.outputMessage);
             this.server.getSocket().off('user:token');
           });
-        }else if(data.type == GiftType.IDEA || data.type == GiftType.CODE)
-        {
-          this.server.sendMessage(this.activeRoom,data.outputMessage);
+        } else if (data.type == GiftType.IDEA || data.type == GiftType.CODE) {
+          this.server.sendMessage(this.activeRoom, data.outputMessage);
         }
       }
     });
@@ -332,12 +338,14 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.showToast = options.showToast != undefined ? options.showToast : true;
     this.showCloseToast =
       options.showCloseToast != undefined ? options.showCloseToast : true;
+    this.showNewUser =
+      options.showNewUser != undefined ? options.showNewUser : true;
   }
 
-  async presentToast(message) {
+  async presentToast(message, duration = 2000, icon = 'checkmark-outline') {
     const toast = await this.toast.create({
       message: message,
-      duration: 2000,
+      duration: duration,
       position: 'top',
       animated: true,
       color: 'tertiary',
@@ -345,7 +353,7 @@ export class HomePage implements OnInit, AfterViewChecked {
       buttons: [
         {
           side: 'end',
-          icon: 'checkmark-outline',
+          icon: icon,
           role: 'cancel',
           handler: () => {
             this.toast.dismiss();
@@ -374,7 +382,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         this.roomRemove();
         this.activeRoom = data.data.room;
         this.roomListenners();
-        this.server.getSocket().emit('user:select',data.data.room);
+        this.server.getSocket().emit('user:select', data.data.room);
       }
     });
   }

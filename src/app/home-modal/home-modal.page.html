@@ -9,7 +9,7 @@
 
 <ion-content>
   <div class="action-section">
-    <ion-input [(ngModel)]="username" (ionBlur)="onChangeUsername()"></ion-input>
+    <ion-input [(ngModel)]="username" (ionChange)="onChangeUsername()"></ion-input>
   </div>
   <div class="action-section big">
     <p>Couleur du pseudo vu par les utilisateurs</p>
@@ -42,6 +42,10 @@
   <div class="action-section">
     <p>Message quand une Room se ferme</p>
     <ion-toggle [(ngModel)]="options.showCloseToast"></ion-toggle>
+  </div>
+  <div class="action-section">
+    <p>Message à la venue d'un nouvel utilisateur dans la Room</p>
+    <ion-toggle [(ngModel)]="options.showNewUser"></ion-toggle>
   </div>
   <!-- <ion-fab horizontal="end" vertical="bottom" slot="fixed">
     <ion-fab-button color="dark">

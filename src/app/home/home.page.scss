@@ -209,15 +209,23 @@
     color: rgb(208, 43, 230);
     /*default color*/
   }
-  .name-icon
-  {
+
+  .name-icon {
+    color: #6c6c6c;
     position: relative;
     bottom: -5px;
-    .icon-information
-    {
+
+    .icon-information {
       height: 20px;
       width: 20px;
-      color: #dcdcdc;
+      color: #6c6c6c;
+    }
+
+    &::after {
+      content: 'info';
+      position: absolute;
+      left: 26px;
+      top: 1px;
     }
   }
 
@@ -228,8 +236,7 @@
     border-radius: 3Px;
   }
 
-  .new-user
-  {
+  .new-user {
     position: relative;
     margin-top: 8px;
     padding: 8px 10px;
@@ -237,8 +244,8 @@
     background: rgba(77, 77, 77, 0.438);
     opacity: 0.5;
 
-    &::first-letter{
-        text-transform: uppercase;
+    &::first-letter {
+      // text-transform: uppercase;
     }
   }
 
@@ -247,8 +254,8 @@
     padding: 8px 10px;
     background: rgba(56, 56, 56, 0.616);
     border-radius: 3Px;
-    img
-    {
+
+    img {
       border-radius: 3px;
       width: 100%;
     }
@@ -285,8 +292,8 @@
     padding: 8px 10px;
     background: rgba(56, 56, 56, 0.616);
     border-radius: 3Px;
-    img
-    {
+
+    img {
       border-radius: 3px;
       width: 100%;
     }
