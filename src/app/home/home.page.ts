@@ -5,7 +5,6 @@ import {
   ViewChild,
   AfterViewChecked,
 } from '@angular/core';
-
 import {
   trigger,
   state,
@@ -13,13 +12,11 @@ import {
   animate,
   transition,
 } from '@angular/animations';
-
 import {
   DialogGiftComponent,
   GiftDialogData,
   GiftType,
 } from '../dialog-gift/dialog-gift.component';
-
 import { Platform } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { HomeModalPage } from '../home-modal/home-modal.page';
@@ -30,6 +27,7 @@ import { ModalRoomPage } from '../modal-room/modal-room.page';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ViewEncapsulation } from '@angular/core';
+
 export interface Message {
   username: string;
   userId: string;
@@ -38,8 +36,10 @@ export interface Message {
   color: string;
   isImage: boolean;
   isInfoMessage: boolean;
+  isReconnectionMessage: boolean;
   pressValue?: number;
 }
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -74,21 +74,22 @@ export class HomePage implements OnInit, AfterViewChecked {
   private showToast = true;
   public showCloseToast = true;
   public showNewUser = true;
-
-  public messages: Message[] = [];
-  public MessageValue: string = '';
-  public ActiveUser = { username: '', userId: '', color: 'rgb(208, 43, 230)' };
-
-  public activeRoom: number = 0;
   public loading = true;
   public HaveClose = false;
-
   public HaveUpdate = false;
-  public UpdateVersion: string = '';
   public popUpActiveRoom = false;
+  public noResumImage = false;
+
+  public messages: Message[] = [];
+
+  public ActiveUser = { username: '', userId: '', color: 'rgb(208, 43, 230)' };
+  public messagePress = { active: false, id: undefined };
+
+  public activeRoom: number = 0;
+  public MessageValue: string = '';
+  public UpdateVersion: string = '';
 
   @ViewChild('messageElement') messageElement;
-
   @ViewChild('scrollBar') private scrollBar: ElementRef;
 
   constructor(
@@ -103,20 +104,34 @@ export class HomePage implements OnInit, AfterViewChecked {
   ) {
     this.platform.ready().then((value) => {
       this.platform.resume.subscribe(() => {
-        this.presentToast('Reconnection a la Room...', 1000, 'globe-outline');
-        this.loading = true;
-        this.messages = [];
+        if (!this.noResumImage) {
+          this.presentToast('Reconnection a la Room...', 1000, 'globe-outline');
+          this.loading = true;
 
-        this.server.RoomExists(this.activeRoom).then((ok) => {
-          if (!ok) {
-            this.presentToast('La Room a été fermer');
-            this.roomRemove();
-            this.activeRoom = 0;
-            this.roomListenners();
-            this.server.getSocket().emit('room:kill', '');
-          }
-          this.loading = false;
-        });
+          this.server.RoomExists(this.activeRoom).then((ok) => {
+            if (!ok) {
+              this.messages = [];
+              this.presentToast('La Room a été fermer');
+              this.roomRemove();
+              this.activeRoom = 0;
+              this.roomListenners();
+              this.server.getSocket().emit('room:kill', '');
+            } else {
+              let recMsg: Message = {
+                username: '',
+                userId: '',
+                MessageContent: 'Reconnection a la Room',
+                isMe: false,
+                color: '',
+                isImage: false,
+                isInfoMessage: false,
+                isReconnectionMessage: true,
+              };
+              this.messages.push(recMsg);
+            }
+            this.loading = false;
+          });
+        }
       });
     });
   }
@@ -187,6 +202,7 @@ export class HomePage implements OnInit, AfterViewChecked {
           color: '#dcdcdc',
           isImage: false,
           isInfoMessage: true,
+          isReconnectionMessage: false,
         };
         this.messages.push(newUserinfo);
       }
@@ -211,6 +227,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         let messageValue = enterMessages[
           Math.floor(Math.random() * enterMessages.length)
         ].replace('{user}', '@' + newUser.username);
+
         let newUserinfo: Message = {
           username: newUser.username,
           userId: newUser.id,
@@ -219,6 +236,7 @@ export class HomePage implements OnInit, AfterViewChecked {
           color: '#dcdcdc',
           isImage: false,
           isInfoMessage: true,
+          isReconnectionMessage: false,
         };
         this.messages.push(newUserinfo);
       }
@@ -243,6 +261,7 @@ export class HomePage implements OnInit, AfterViewChecked {
           isMe: this.ActiveUser.userId == data.id ? true : false,
           isImage: false,
           isInfoMessage: false,
+          isReconnectionMessage: false,
         };
         this.messages.push(message);
 
@@ -264,6 +283,7 @@ export class HomePage implements OnInit, AfterViewChecked {
               isMe: this.ActiveUser.userId == data.id ? true : false,
               isImage: true,
               isInfoMessage: false,
+              isReconnectionMessage: false,
             };
 
             this.messages.push(message);
@@ -324,6 +344,11 @@ export class HomePage implements OnInit, AfterViewChecked {
         break;
     }
 
+    if(giftType === GiftType.IMAGE)
+    {
+      this.noResumImage = true;
+    }
+
     const dialogRef = this.dialog.open(DialogGiftComponent, {
       width: width,
       data: {
@@ -336,7 +361,26 @@ export class HomePage implements OnInit, AfterViewChecked {
     });
 
     dialogRef.afterClosed().subscribe((data: GiftDialogData | undefined) => {
+      if(this.noResumImage)
+      {
+        this.loading = true;
+        this.server.RoomExists(this.activeRoom).then((ok) => {
+          if (!ok) 
+          {
+            this.messages = [];
+            this.presentToast('La Room a été fermer');
+            this.roomRemove();
+            this.activeRoom = 0;
+            this.roomListenners();
+            this.server.getSocket().emit('room:kill', '');
+          }
+          this.loading = false;
+        });
+        this.noResumImage = false;
+      }
+      
       this.popUpActiveRoom = false;
+      
       if (data != undefined) {
         if (data.type == GiftType.IMAGE) {
           this.server.getSocket().emit('user:image', { room: this.activeRoom });
@@ -531,20 +575,16 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.GiftViewActive = !this.GiftViewActive;
   }
 
-  public messagePress = { active: false, id:undefined };
-
   onMessageStartPress(messageIndex) {
     this.messagePress.active = true;
     this.messages[messageIndex].pressValue = 1;
     this.messagePress.id = setInterval(() => {
-      if(this.messages[messageIndex].pressValue + 5 > 101)
-      {
+      if (this.messages[messageIndex].pressValue + 5 > 101) {
         this.messageElement.setFocus();
         this.MessageValue += this.messages[messageIndex].MessageContent;
         this.onMessageEndPress(messageIndex);
-      }else
-      {
-        this.messages[messageIndex].pressValue+= 5;
+      } else {
+        this.messages[messageIndex].pressValue += 5;
       }
     }, 100);
   }

@@ -19,25 +19,40 @@
     <div id="chatSection" #scrollBar>
       <br />
       <div class="message-block" *ngFor="let message of messages;let i = index" [attr.data-index]="i">
-        <div class="message-l" *ngIf="!message.isMe" (touchstart)="onMessageStartPress(i)" (touchend)="onMessageEndPress(i)">
+        <div 
+        [ngClass]="message.isReconnectionMessage ? 'message-l max-l' : 'message-l'"
+        *ngIf="!message.isMe" 
+        (touchstart)="onMessageStartPress(i)" 
+        (touchend)="onMessageEndPress(i)">
           
-          <div class="name" [style.color]="message.color" *ngIf="ShowUserTag && !message.isInfoMessage"
+          <!-- classic message name -->
+          <div class="name" [style.color]="message.color" *ngIf="ShowUserTag && !message.isInfoMessage && !message.isReconnectionMessage"
             (click)="tagUser(message.username,message.userId)">
             @{{message.username}}
           </div>
+          
+          <!-- info message name -->
           <div class="name-icon" *ngIf="message.isInfoMessage" (click)="tagUser(message.username,message.userId)">
             <ion-icon name="information-circle" class="icon-information"></ion-icon> 
           </div>
           
-          <div *ngIf="!message.isImage && !message.isInfoMessage" class="content" [innerHTML]="message.MessageContent | messageRender"></div>
-          <div *ngIf="!message.isImage && !message.isInfoMessage && message.pressValue" [style.width]="message.pressValue + '%'" [style.backgroundColor]="message.color" class="line-bar"></div>
+          <!--  classic user message -->
+          <div *ngIf="!message.isImage && !message.isInfoMessage && !message.isReconnectionMessage" class="content" [innerHTML]="message.MessageContent | messageRender"></div>
+          <div *ngIf="!message.isImage && !message.isInfoMessage && message.pressValue && !message.isReconnectionMessage" [style.width]="message.pressValue + '%'" [style.backgroundColor]="message.color" class="line-bar"></div>
 
-          <div class="image-content" *ngIf="message.isImage && !message.isInfoMessage">
+          <!-- user image -->
+          <div class="image-content" *ngIf="message.isImage && !message.isInfoMessage && !message.isReconnectionMessage">
             <img [src]="sanitizer.bypassSecurityTrustUrl(message.MessageContent)" alt=" Une erreur est survenue au chargement de l'image">
           </div>
 
-          <div class="new-user" [style.color]="message.color" *ngIf="message.isInfoMessage && !message.isImage">
+          <!-- info message -->
+          <div class="new-user" [style.color]="message.color" *ngIf="message.isInfoMessage && !message.isImage && !message.isReconnectionMessage">
             {{ message.MessageContent }}
+          </div>
+
+          <!-- isReconnectionMessage -->
+          <div class="reconnection" *ngIf="message.isReconnectionMessage">
+              <p><span>{{ message.MessageContent }}</span></p>
           </div>
         </div>
 

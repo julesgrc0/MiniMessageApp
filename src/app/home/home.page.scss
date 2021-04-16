@@ -236,13 +236,33 @@
     border-radius: 3Px;
   }
 
-  .line-bar
-  {
+  .line-bar {
     position: absolute;
     bottom: -2Px;
     height: 2px;
     left: 0px;
     transition: 0.3s;
+  }
+
+  .reconnection {
+    margin-bottom: 30px;
+    margin-top: 30px;
+    position: relative;
+    width: 100%;
+    p {
+      color: rgb(167, 167, 167);
+      margin: 0;
+      width: 100%;
+      text-align: center;
+      border-bottom: 2px solid #1f1f1f;
+      line-height: 0.1em;
+      margin: 10px 0 20px;
+      span 
+      {
+        background: #121212;
+        padding: 0 10px;
+      }
+    }
   }
 
   .new-user {
@@ -271,6 +291,11 @@
   }
 }
 
+.max-l
+{
+  width: 100%;
+  left:0;
+}
 
 .message-r {
   position: relative;
@@ -342,7 +367,7 @@
     background: #303030;
     top: 50%;
     transform: translateY(-50%);
-    margin-left:2%;
+    margin-left: 2%;
   }
 
   .bk-o {
