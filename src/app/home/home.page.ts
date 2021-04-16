@@ -160,6 +160,37 @@ export class HomePage implements OnInit, AfterViewChecked {
   }
 
   roomListenners() {
+    this.server.getSocket().on(this.activeRoom + ':leave', (newUser) => {
+      if (this.showNewUser) {
+        let enterMessages = [
+          '{user} est parti de la Room 😭',
+          '{user} part vers d\'autre horizon 🛣',
+          '{user} s\'enfuit 🏃‍♂️',
+          '{user} nous a quitter',
+          '{user} disparaît  subitement ☁',
+          '{user} s\'évade de la Room',
+          '{user} sort de la Room',
+          '{user} déménage vers d\'autre horizons',
+          '{user} repars avec la pizza 🍕',
+          '{user} nous abandonne pour une autre Room 😢'
+        ];
+        let messageValue = enterMessages[
+          Math.floor(Math.random() * enterMessages.length)
+        ].replace('{user}', '@' + newUser.username);
+
+        let newUserinfo: Message = {
+          username: newUser.username,
+          userId: newUser.id,
+          MessageContent: messageValue,
+          isMe: false,
+          color: '#dcdcdc',
+          isImage: false,
+          isInfoMessage: true,
+        };
+        this.messages.push(newUserinfo);
+      }
+    });
+
     this.server.getSocket().on(this.activeRoom + ':join', (newUser) => {
       if (this.showNewUser) {
         let enterMessages = [
@@ -330,6 +361,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.server.getSocket().off(this.activeRoom + ':close');
     this.server.getSocket().off(this.activeRoom + ':image');
     this.server.getSocket().off(this.activeRoom + ':join');
+    this.server.getSocket().off(this.activeRoom + ':leave');
   }
 
   ngAfterViewChecked() {
