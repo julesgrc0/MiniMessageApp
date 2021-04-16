@@ -13,6 +13,12 @@
 </div>
 
 <div *ngIf="data.type == 1">
+  <div class="power">
+      <div class="case-p" [style.backgroundColor]="colorBattery.a"></div>
+      <div class="case-p" [style.backgroundColor]="colorBattery.b"></div>
+      <div class="case-p" [style.backgroundColor]="colorBattery.c"></div>
+      <div class="case-p" [style.backgroundColor]="colorBattery.d"></div>
+  </div>
   <button class="btn-check" (click)="close()">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>

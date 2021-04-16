@@ -46,17 +46,52 @@ div {
       bottom: 11px;
     };
     position: relative;
-    left: 50%;
+    left: 50% ;
     transform: translateX(-50%);
+    top:0px;
+
     border-radius: 7px;
     background: #5f5e5e;
     color: #fff;
-    position: relative;
     outline: none;
     transition: 0.5s;
   }
 
-  
+  .power
+  {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 60px;
+    border-radius: 4px;
+    background: rgb(34, 34, 34);
+    border: 2px solid rgb(17, 17, 17);
+    // overflow: hidden;
+
+    .case-p
+    {
+      opacity: 0.5;
+      display: inline-block;
+      height: 50px;
+      width: 20%;
+      margin:0px 2.5%;
+      border-radius: 2px;
+      background: rgb(48, 48, 48);
+    }
+    &::after{
+      content:"";
+      height: 20px;
+      width: 10px;
+      border-radius: 3px;
+      background: rgb(17, 17, 17);
+      color:rgb(17, 17, 17);
+      position: absolute;
+      left: -10px;
+      top:50%;
+      transform:translateY(-50%);
+    }
+  }
 }
 
 ion-textarea {

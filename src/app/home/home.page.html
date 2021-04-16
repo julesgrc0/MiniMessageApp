@@ -52,7 +52,7 @@
       </div>
       <br /><br /><br /><br /><br /><br />
     </div>
-    <div id="bottomSection" *ngIf="!GiftViewActive">
+    <div id="bottomSection" *ngIf="!GiftViewActive && !popUpActiveRoom">
       <ion-input #messageElement (ionBlur)="onMessageBoxToggle($event)" maxlength="1000" class="message-box" [(ngModel)]="MessageValue"
         placeholder="Envoyer un message" inputmode="text" autocorrect="off" (keypress)="onKeyPress($event)"></ion-input>
       <button class="btn-round" (click)="toggleGiftView()">
@@ -63,7 +63,7 @@
       </button>
     </div>
     <div id="giftSection" [@openClose]="GiftViewActive ? 'open' : 'closed'"
-      [style.display]="GiftViewActive ? 'block' : 'none'">
+      [style.display]="GiftViewActive ? 'block' : 'none'" >
       <button class="btn-round-close" (click)="toggleGiftView()">
         <ion-icon name="close-outline" class="gift-icon"></ion-icon>
       </button>

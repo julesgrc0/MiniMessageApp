@@ -29,7 +29,6 @@ import { ServerServiceComponent } from '../server-service/server-service.compone
 import { ModalRoomPage } from '../modal-room/modal-room.page';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
-
 export interface Message {
   username: string;
   userId: string;
@@ -39,7 +38,7 @@ export interface Message {
   isImage: boolean;
   isInfoMessage: boolean;
 }
-
+import { ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -64,6 +63,7 @@ export interface Message {
       transition('closed => open', [animate('0.3s')]),
     ]),
   ],
+  encapsulation: ViewEncapsulation.None,
   providers: [],
 })
 export class HomePage implements OnInit, AfterViewChecked {
@@ -84,6 +84,7 @@ export class HomePage implements OnInit, AfterViewChecked {
 
   public HaveUpdate = false;
   public UpdateVersion: string = '';
+  public popUpActiveRoom = false;
 
   @ViewChild('messageElement') messageElement;
 
@@ -171,7 +172,7 @@ export class HomePage implements OnInit, AfterViewChecked {
           '{user} survient dans la Room',
           '{user} rejoint la Room',
           '{user} apparait 🥳',
-          '{user} est en 🔥',
+          '{user} nous rejoint en 🔥',
           '{user} apporte de la pizza 🍕',
           "{user} vient s'ajoute discrètement dans la Room 👀",
         ];
@@ -213,8 +214,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         };
         this.messages.push(message);
 
-        if (this.messages.length > 100) 
-        {
+        if (this.messages.length > 100) {
           this.messages = this.messages.slice(0, 50);
         }
       }
@@ -235,8 +235,7 @@ export class HomePage implements OnInit, AfterViewChecked {
             };
 
             this.messages.push(message);
-            if (this.messages.length > 100) 
-            {
+            if (this.messages.length > 100) {
               this.messages = this.messages.slice(0, 50);
             }
           }
@@ -246,8 +245,11 @@ export class HomePage implements OnInit, AfterViewChecked {
   }
 
   openGiftDialog(type: string) {
+    this.popUpActiveRoom = true;
     this.GiftViewActive = false;
     let giftType: GiftType = GiftType.IMAGE;
+    let width = '60%';
+
     switch (type) {
       case 'IMAGE':
         giftType = GiftType.IMAGE;
@@ -257,12 +259,15 @@ export class HomePage implements OnInit, AfterViewChecked {
         break;
       case 'IDEA':
         giftType = GiftType.IDEA;
+        width = '80%';
         break;
       case 'CODE':
         giftType = GiftType.CODE;
+        width = '80%';
         break;
       case 'PHONE':
         giftType = GiftType.PHONE;
+        width = '80%';
         break;
       case 'GAME':
         giftType = GiftType.GAME;
@@ -288,7 +293,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     }
 
     const dialogRef = this.dialog.open(DialogGiftComponent, {
-      width: '60%',
+      width: width,
       data: {
         type: giftType,
         username: this.ActiveUser.username,
@@ -299,6 +304,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     });
 
     dialogRef.afterClosed().subscribe((data: GiftDialogData | undefined) => {
+      this.popUpActiveRoom = false;
       if (data != undefined) {
         if (data.type == GiftType.IMAGE) {
           this.server.getSocket().emit('user:image', { room: this.activeRoom });
@@ -306,9 +312,15 @@ export class HomePage implements OnInit, AfterViewChecked {
             this.server.sendImage(token, data.outputMessage);
             this.server.getSocket().off('user:token');
           });
-        } else if (data.type == GiftType.IDEA || data.type == GiftType.CODE) {
+        } else if (
+          data.type == GiftType.IDEA ||
+          data.type == GiftType.CODE ||
+          data.type == GiftType.BATTERY
+        ) {
           this.server.sendMessage(this.activeRoom, data.outputMessage);
         }
+      } else {
+        this.GiftViewActive = true;
       }
     });
   }

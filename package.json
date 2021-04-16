@@ -24,6 +24,7 @@
     "@angular/router": "~11.2.0",
     "@capacitor/core": "2.4.7",
     "@ionic-native/base64": "^5.32.0",
+    "@ionic-native/battery-status": "^5.32.1",
     "@ionic-native/image-picker": "^5.27.0",
     "@ionic-native/sqlite": "^5.32.0",
     "@ionic/angular": "^5.5.2",
@@ -47,6 +48,7 @@
     "codelyzer": "^6.0.0",
     "com-badrit-base64": "^0.2.0",
     "cordova-ios": "^6.2.0",
+    "cordova-plugin-battery-status": "^2.0.3",
     "cordova-plugin-camera": "^5.0.1",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-ionic-webview": "^4.0.0",
@@ -80,7 +82,8 @@
       },
       "cordova-sqlite-storage": {},
       "cordova-plugin-telerik-imagepicker": {},
-      "com-badrit-base64": {}
+      "com-badrit-base64": {},
+      "cordova-plugin-battery-status": {}
     },
     "platforms": [
       "android"
