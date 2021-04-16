@@ -29,6 +29,7 @@ import { ServerServiceComponent } from '../server-service/server-service.compone
 import { ModalRoomPage } from '../modal-room/modal-room.page';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ViewEncapsulation } from '@angular/core';
 export interface Message {
   username: string;
   userId: string;
@@ -37,8 +38,8 @@ export interface Message {
   color: string;
   isImage: boolean;
   isInfoMessage: boolean;
+  pressValue?: number;
 }
-import { ViewEncapsulation } from '@angular/core';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -164,15 +165,15 @@ export class HomePage implements OnInit, AfterViewChecked {
       if (this.showNewUser) {
         let enterMessages = [
           '{user} est parti de la Room 😭',
-          '{user} part vers d\'autre horizon 🛣',
-          '{user} s\'enfuit 🏃‍♂️',
+          "{user} part vers d'autre horizon 🛣",
+          "{user} s'enfuit 🏃‍♂️",
           '{user} nous a quitter',
           '{user} disparaît  subitement ☁',
-          '{user} s\'évade de la Room',
+          "{user} s'évade de la Room",
           '{user} sort de la Room',
-          '{user} déménage vers d\'autre horizons',
+          "{user} déménage vers d'autre horizons",
           '{user} repars avec la pizza 🍕',
-          '{user} nous abandonne pour une autre Room 😢'
+          '{user} nous abandonne pour une autre Room 😢',
         ];
         let messageValue = enterMessages[
           Math.floor(Math.random() * enterMessages.length)
@@ -528,5 +529,31 @@ export class HomePage implements OnInit, AfterViewChecked {
 
   toggleGiftView() {
     this.GiftViewActive = !this.GiftViewActive;
+  }
+
+  public messagePress = { active: false, id:undefined };
+
+  onMessageStartPress(messageIndex) {
+    this.messagePress.active = true;
+    this.messages[messageIndex].pressValue = 1;
+    this.messagePress.id = setInterval(() => {
+      if(this.messages[messageIndex].pressValue + 5 > 101)
+      {
+        this.messageElement.setFocus();
+        this.MessageValue += this.messages[messageIndex].MessageContent;
+        this.onMessageEndPress(messageIndex);
+      }else
+      {
+        this.messages[messageIndex].pressValue+= 5;
+      }
+    }, 100);
+  }
+
+  onMessageEndPress(messageIndex) {
+    if (this.messagePress.active) {
+      this.messages[messageIndex].pressValue = 0;
+      this.messagePress.active = false;
+      clearInterval(this.messagePress.id);
+    }
   }
 }

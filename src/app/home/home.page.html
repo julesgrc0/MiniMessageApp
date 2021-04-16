@@ -18,8 +18,8 @@
   <div id="container" *ngIf="!loading">
     <div id="chatSection" #scrollBar>
       <br />
-      <div class="message-block" *ngFor="let message of messages">
-        <div class="message-l" *ngIf="!message.isMe">
+      <div class="message-block" *ngFor="let message of messages;let i = index" [attr.data-index]="i">
+        <div class="message-l" *ngIf="!message.isMe" (touchstart)="onMessageStartPress(i)" (touchend)="onMessageEndPress(i)">
           
           <div class="name" [style.color]="message.color" *ngIf="ShowUserTag && !message.isInfoMessage"
             (click)="tagUser(message.username,message.userId)">
@@ -30,7 +30,8 @@
           </div>
           
           <div *ngIf="!message.isImage && !message.isInfoMessage" class="content" [innerHTML]="message.MessageContent | messageRender"></div>
-          
+          <div *ngIf="!message.isImage && !message.isInfoMessage && message.pressValue" [style.width]="message.pressValue + '%'" [style.backgroundColor]="message.color" class="line-bar"></div>
+
           <div class="image-content" *ngIf="message.isImage && !message.isInfoMessage">
             <img [src]="sanitizer.bypassSecurityTrustUrl(message.MessageContent)" alt=" Une erreur est survenue au chargement de l'image">
           </div>

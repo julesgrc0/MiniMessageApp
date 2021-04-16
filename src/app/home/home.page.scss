@@ -236,6 +236,15 @@
     border-radius: 3Px;
   }
 
+  .line-bar
+  {
+    position: absolute;
+    bottom: -2Px;
+    height: 2px;
+    left: 0px;
+    transition: 0.3s;
+  }
+
   .new-user {
     position: relative;
     margin-top: 8px;
