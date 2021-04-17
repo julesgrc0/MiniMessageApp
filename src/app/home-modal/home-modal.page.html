@@ -1,7 +1,10 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end" (click)="dismiss()" class="buttons-menu">
+    <ion-buttons *ngIf="!loading" slot="end" (click)="dismiss()" class="buttons-menu">
       <ion-icon class="icon-menu" name="close-outline"></ion-icon>
+    </ion-buttons>
+    <ion-buttons slot="end"  class="spin" *ngIf="loading">
+      <ion-spinner></ion-spinner>
     </ion-buttons>
     <ion-title>Options</ion-title>
   </ion-toolbar>
@@ -9,7 +12,7 @@
 
 <ion-content>
   <div class="action-section">
-    <ion-input [(ngModel)]="username" (ionChange)="onChangeUsername()"></ion-input>
+    <ion-input [(ngModel)]="username" (ionChange)="onChangeUsername()" (ionBlur)="onEndUsername()"></ion-input>
   </div>
   <div class="action-section big">
     <p>Couleur du pseudo vu par les utilisateurs</p>

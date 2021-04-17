@@ -1,12 +1,24 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end" (click)="onMenuClick()" class="buttons-menu" *ngIf="!HaveUpdate  && loading == false">
+    <ion-buttons
+      slot="end"
+      (click)="onMenuClick()"
+      class="buttons-menu"
+      *ngIf="!HaveUpdate  && loading == false"
+    >
       <ion-icon class="icon-menu" name="settings-outline"></ion-icon>
     </ion-buttons>
-    <ion-buttons slot="end" class="buttons-menu" (click)="onRoomClick()" *ngIf="!HaveUpdate  && loading == false">
+    <ion-buttons
+      slot="end"
+      class="buttons-menu"
+      (click)="onRoomClick()"
+      *ngIf="!HaveUpdate  && loading == false"
+    >
       <ion-icon class="icon-menu" name="chevron-up-circle-outline"></ion-icon>
     </ion-buttons>
-    <ion-title *ngIf="!HaveUpdate && !loading ">Home - {{ activeRoom }}</ion-title>
+    <ion-title *ngIf="!HaveUpdate && !loading "
+      >Home - {{ activeRoom }}</ion-title
+    >
     <ion-title *ngIf="HaveUpdate || loading">Home</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -18,68 +30,137 @@
   <div id="container" *ngIf="!loading">
     <div id="chatSection" #scrollBar>
       <br />
-      <div class="message-block" *ngFor="let message of messages;let i = index" [attr.data-index]="i">
-        <div 
-        [ngClass]="message.isReconnectionMessage ? 'message-l max-l' : 'message-l'"
-        *ngIf="!message.isMe" 
-        (touchstart)="onMessageStartPress(i)" 
-        (touchend)="onMessageEndPress(i)">
-          
+      <div
+        class="message-block"
+        *ngFor="let message of messages;let i = index"
+        [attr.data-index]="i"
+      >
+        <div
+          [ngClass]="message.isReconnectionMessage ? 'message-l max-l' : 'message-l'"
+          *ngIf="!message.isMe"
+          (touchstart)="onMessageStartPress(i)"
+          (touchend)="onMessageEndPress(i)"
+        >
           <!-- classic message name -->
-          <div class="name" [style.color]="message.color" *ngIf="ShowUserTag && !message.isInfoMessage && !message.isReconnectionMessage"
-            (click)="tagUser(message.username,message.userId)">
+          <div
+            class="name"
+            [style.color]="message.color"
+            *ngIf="ShowUserTag && !message.isInfoMessage && !message.isReconnectionMessage"
+            (click)="tagUser(message.username,message.userId)"
+          >
             @{{message.username}}
           </div>
-          
+
           <!-- info message name -->
-          <div class="name-icon" *ngIf="message.isInfoMessage" (click)="tagUser(message.username,message.userId)">
-            <ion-icon name="information-circle" class="icon-information"></ion-icon> 
+          <div
+            class="name-icon"
+            *ngIf="message.isInfoMessage"
+            (click)="tagUser(message.username,message.userId)"
+          >
+            <ion-icon
+              name="information-circle"
+              class="icon-information"
+            ></ion-icon>
           </div>
-          
+
           <!--  classic user message -->
-          <div *ngIf="!message.isImage && !message.isInfoMessage && !message.isReconnectionMessage" class="content" [innerHTML]="message.MessageContent | messageRender"></div>
-          <div *ngIf="!message.isImage && !message.isInfoMessage && message.pressValue && !message.isReconnectionMessage" [style.width]="message.pressValue + '%'" [style.backgroundColor]="message.color" class="line-bar"></div>
+          <div
+            *ngIf="!message.isImage && !message.isInfoMessage && !message.isReconnectionMessage"
+            class="content"
+            [innerHTML]="message.MessageContent | messageRender"
+          ></div>
+          <div
+            *ngIf="!message.isImage && !message.isInfoMessage && message.pressValue && !message.isReconnectionMessage"
+            [style.width]="message.pressValue + '%'"
+            [style.backgroundColor]="message.color"
+            class="line-bar"
+          ></div>
 
           <!-- user image -->
-          <div class="image-content" *ngIf="message.isImage && !message.isInfoMessage && !message.isReconnectionMessage">
-            <img [src]="sanitizer.bypassSecurityTrustUrl(message.MessageContent)" alt=" Une erreur est survenue au chargement de l'image">
+          <div
+            class="image-content"
+            *ngIf="message.isImage && !message.isInfoMessage && !message.isReconnectionMessage"
+          >
+            <img
+              [src]="sanitizer.bypassSecurityTrustUrl(message.MessageContent)"
+              alt=" Une erreur est survenue au chargement de l'image"
+            />
           </div>
 
           <!-- info message -->
-          <div class="new-user" [style.color]="message.color" *ngIf="message.isInfoMessage && !message.isImage && !message.isReconnectionMessage">
+          <div
+            class="new-user"
+            [style.color]="message.color"
+            *ngIf="message.isInfoMessage && !message.isImage && !message.isReconnectionMessage"
+          >
             {{ message.MessageContent }}
           </div>
 
           <!-- isReconnectionMessage -->
           <div class="reconnection" *ngIf="message.isReconnectionMessage">
-              <p><span>{{ message.MessageContent }}</span></p>
+            <p><span>{{ message.MessageContent }}</span></p>
           </div>
         </div>
 
         <div class="message-r" *ngIf="message.isMe">
-          <div class="name" [style.color]="ActiveUser.color" *ngIf="ShowSelfTag">
+          <div
+            class="name"
+            [style.color]="ActiveUser.color"
+            *ngIf="ShowSelfTag"
+          >
             @{{message.username}}
           </div>
-          <div *ngIf="!message.isImage" class="content" [innerHTML]="message.MessageContent | messageRender"></div>
+          <div
+            *ngIf="!message.isImage"
+            class="content"
+            [innerHTML]="message.MessageContent | messageRender"
+          ></div>
           <div class="image-content" *ngIf="message.isImage">
-            <img [src]="sanitizer.bypassSecurityTrustUrl(message.MessageContent)" alt=" Une erreur est survenue au chargement de l'image">
+            <img
+              [src]="sanitizer.bypassSecurityTrustUrl(message.MessageContent)"
+              alt=" Une erreur est survenue au chargement de l'image"
+            />
           </div>
         </div>
       </div>
       <br /><br /><br /><br /><br /><br />
     </div>
+    <div id="AutoCommands" *ngIf="CommandCompletionActive">
+      <div class="cmd-item  ion-activatable" *ngFor="let cmd of viewCommands" (click)="executeCommand(cmd)">
+        {{ cmd }}
+        <ion-ripple-effect></ion-ripple-effect>
+      </div>
+    </div>
     <div id="bottomSection" *ngIf="!GiftViewActive && !popUpActiveRoom">
-      <ion-input #messageElement (ionBlur)="onMessageBoxToggle($event)" maxlength="1000" class="message-box" [(ngModel)]="MessageValue"
-        placeholder="Envoyer un message" inputmode="text" autocorrect="off" (keypress)="onKeyPress($event)"></ion-input>
-      <button class="btn-round" (click)="toggleGiftView()">
+      <ion-input
+        #messageElement
+        
+        class="message-box"
+        maxlength="1000"
+        placeholder="Envoyer un message"
+        inputmode="text"
+        autocorrect="off"
+
+        [(ngModel)]="MessageValue"
+        (ionChange)="onMessageChange()"
+        (keypress)="onKeyPress($event)"
+      ></ion-input>
+
+      <button class="btn-round" (click)="toggleGiftView()" [disabled]="CommandCompletionActive">
         <ion-icon name="gift-outline" class="gift-icon"></ion-icon>
       </button>
-      <button class="btn-round-right" (click)="sendMessage(true)">
+      <button class="btn-round-right" (click)="sendMessage(true)" *ngIf="!CommandCompletionActive">
         <ion-icon name="send-outline" class="gift-icon"></ion-icon>
       </button>
+      <button class="btn-round-right" *ngIf="CommandCompletionActive"  (click)="executeCommand(MessageValue)">
+        <ion-icon name="terminal-outline" class="gift-icon"></ion-icon>
+      </button>
     </div>
-    <div id="giftSection" [@openClose]="GiftViewActive ? 'open' : 'closed'"
-      [style.display]="GiftViewActive ? 'block' : 'none'" >
+    <div
+      id="giftSection"
+      [@openClose]="GiftViewActive ? 'open' : 'closed'"
+      [style.display]="GiftViewActive ? 'block' : 'none'"
+    >
       <button class="btn-round-close" (click)="toggleGiftView()">
         <ion-icon name="close-outline" class="gift-icon"></ion-icon>
       </button>

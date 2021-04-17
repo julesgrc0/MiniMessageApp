@@ -68,6 +68,39 @@
   border-top: 2px solid rgb(43, 43, 43);
 }
 
+#AutoCommands
+{
+  position: absolute;
+  bottom: 82px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: {
+    top: 20px;
+    bottom: 10px;
+  };
+  width: 100%;
+  background: rgb(36, 36, 36);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8Px;
+  overflow-y: scroll;
+  max-height: 30%;
+  .cmd-item
+  {
+    overflow: hidden;
+    height: 40px;
+    width: 90%;
+    background: #121212;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 2Px;
+    border-radius: 2px;
+  }
+}
+
 .message-box {
   border-radius: 3px;
   top: 12Px;
@@ -92,6 +125,10 @@
   // border: 1px solid rgb(77, 77, 77);
   background: rgba(58, 58, 58, 0.829);
   transition: 0.5s;
+  &:disabled
+  {
+    opacity: 0.4;
+  }
 }
 
 .btn-round-right {
@@ -399,3 +436,4 @@
     transform: translateY(-50%);
   }
 }
+

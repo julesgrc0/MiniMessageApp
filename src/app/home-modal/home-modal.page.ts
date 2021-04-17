@@ -14,6 +14,7 @@ export class HomeModalPage implements OnInit {
   @Input() options: any;
   @Input() socket: any;
   public rooms: any;
+  public loading = false;
 
   public colors: string[] = [
     '#13233B',
@@ -41,12 +42,25 @@ export class HomeModalPage implements OnInit {
     this.color = color;
   }
 
-  onChangeUsername() {
+  onChangeUsername() 
+  {
     this.username = this.username?.replace(/\s/g, '_');
     this.username = this.username?.replace(/\-/g, '.');
     this.username = this.username?.match(/[a-zA-Z0-9\.\s]+/g)?.join('_');
     this.username = this.username?.toLocaleLowerCase();
     this.username = this.username?.slice(0,30);
+  }
+
+  onEndUsername()
+  {
+    this.loading = true;
+    this.socket.off('username');
+    this.socket.on('username',(name)=>
+    {
+      this.loading = false;
+      this.username = name;
+    })
+    this.socket.emit('set:username', this.username);
   }
 
   dismiss() {

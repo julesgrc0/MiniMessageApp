@@ -62,25 +62,38 @@ export interface Message {
       ),
       transition('open => closed', [animate('0.3s')]),
       transition('closed => open', [animate('0.3s')]),
-    ]),
+    ])
   ],
   encapsulation: ViewEncapsulation.None,
   providers: [],
 })
 export class HomePage implements OnInit, AfterViewChecked {
-  public GiftViewActive = false;
+  public showToast = true;
   public ShowSelfTag = true;
   public ShowUserTag = true;
-  private showToast = true;
   public showCloseToast = true;
   public showNewUser = true;
   public loading = true;
+
+  public GiftViewActive = false;
   public HaveClose = false;
   public HaveUpdate = false;
   public popUpActiveRoom = false;
   public noResumImage = false;
+  public CommandCompletionActive = false;
 
   public messages: Message[] = [];
+  public commands: string[] = [
+    '/remove @user',
+    '/tag @user',
+    '/close <room_id>',
+    '/exit',
+    '/ping',
+    '/alert',
+    '/restart',
+    '/home',
+  ];
+  public viewCommands: string[] = [];
 
   public ActiveUser = { username: '', userId: '', color: 'rgb(208, 43, 230)' };
   public messagePress = { active: false, id: undefined };
@@ -178,26 +191,14 @@ export class HomePage implements OnInit, AfterViewChecked {
   roomListenners() {
     this.server.getSocket().on(this.activeRoom + ':leave', (newUser) => {
       if (this.showNewUser) {
-        let enterMessages = [
-          '{user} est parti de la Room 😭',
-          "{user} part vers d'autre horizon 🛣",
-          "{user} s'enfuit 🏃‍♂️",
-          '{user} nous a quitter',
-          '{user} disparaît  subitement ☁',
-          "{user} s'évade de la Room",
-          '{user} sort de la Room',
-          "{user} déménage vers d'autre horizons",
-          '{user} repars avec la pizza 🍕',
-          '{user} nous abandonne pour une autre Room 😢',
-        ];
-        let messageValue = enterMessages[
-          Math.floor(Math.random() * enterMessages.length)
-        ].replace('{user}', '@' + newUser.username);
+        if (!this.messagePress.active) {
+          this.scrollToBottom();
+        }
 
         let newUserinfo: Message = {
           username: newUser.username,
           userId: newUser.id,
-          MessageContent: messageValue,
+          MessageContent: newUser.message,
           isMe: false,
           color: '#dcdcdc',
           isImage: false,
@@ -210,28 +211,14 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':join', (newUser) => {
       if (this.showNewUser) {
-        let enterMessages = [
-          'Bienvenue à {user} !',
-          'Souhaiter la bienvenue à {user} !',
-          'Un {user} sauvage apparaît  !',
-          '{user} nous a rejoint !',
-          '{user} revient de loin !',
-          "{user} s'ajoute à la conversation",
-          '{user} survient dans la Room',
-          '{user} rejoint la Room',
-          '{user} apparait 🥳',
-          '{user} nous rejoint en 🔥',
-          '{user} apporte de la pizza 🍕',
-          "{user} vient s'ajoute discrètement dans la Room 👀",
-        ];
-        let messageValue = enterMessages[
-          Math.floor(Math.random() * enterMessages.length)
-        ].replace('{user}', '@' + newUser.username);
+        if (!this.messagePress.active) {
+          this.scrollToBottom();
+        }
 
         let newUserinfo: Message = {
           username: newUser.username,
           userId: newUser.id,
-          MessageContent: messageValue,
+          MessageContent: newUser.message,
           isMe: false,
           color: '#dcdcdc',
           isImage: false,
@@ -253,6 +240,10 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':message', (data) => {
       if (data.room === this.activeRoom) {
+        if (!this.messagePress.active) {
+          this.scrollToBottom();
+        }
+
         let message: Message = {
           username: data.username,
           userId: data.id,
@@ -273,6 +264,10 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':image', (data) => {
       if (data.room === this.activeRoom) {
+        if (!this.messagePress.active) {
+          this.scrollToBottom();
+        }
+
         this.server.getImage(data.message).then((image) => {
           if (image) {
             let message: Message = {
@@ -344,8 +339,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         break;
     }
 
-    if(giftType === GiftType.IMAGE)
-    {
+    if (giftType === GiftType.IMAGE) {
       this.noResumImage = true;
     }
 
@@ -361,12 +355,10 @@ export class HomePage implements OnInit, AfterViewChecked {
     });
 
     dialogRef.afterClosed().subscribe((data: GiftDialogData | undefined) => {
-      if(this.noResumImage)
-      {
+      if (this.noResumImage) {
         this.loading = true;
         this.server.RoomExists(this.activeRoom).then((ok) => {
-          if (!ok) 
-          {
+          if (!ok) {
             this.messages = [];
             this.presentToast('La Room a été fermer');
             this.roomRemove();
@@ -378,9 +370,9 @@ export class HomePage implements OnInit, AfterViewChecked {
         });
         this.noResumImage = false;
       }
-      
+
       this.popUpActiveRoom = false;
-      
+
       if (data != undefined) {
         if (data.type == GiftType.IMAGE) {
           this.server.getSocket().emit('user:image', { room: this.activeRoom });
@@ -410,7 +402,10 @@ export class HomePage implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
-    this.scrollToBottom();
+    // if(!this.messagePress.active)
+    // {
+    //   this.scrollToBottom();
+    // }
   }
 
   scrollToBottom(): void {
@@ -569,7 +564,41 @@ export class HomePage implements OnInit, AfterViewChecked {
     }
   }
 
-  onMessageBoxToggle(e) {}
+  executeCommand(value) {
+    if (this.CommandCompletionActive) {
+      let cmd = value?.replace('/','')?.split(' ')[0];
+      let send = false;
+      switch(cmd) 
+      {
+        case 'remove':
+          send = true;
+        break;
+      }
+      if(send) 
+      {
+        this.server.getSocket().emit(this.activeRoom+':cmd',{cmd:cmd});        
+      }
+
+      setTimeout(()=>{
+        this.CommandCompletionActive = false;
+        this.MessageValue = '';
+      },200)
+    }
+  }
+
+  onMessageChange() {
+    if (this.MessageValue.startsWith('/')) {
+      this.CommandCompletionActive = true;
+      this.viewCommands = [];
+      for (const cmd of this.commands) {
+        if (cmd.match(this.MessageValue)) {
+          this.viewCommands.push(cmd);
+        }
+      }
+    } else {
+      this.CommandCompletionActive = false;
+    }
+  }
 
   toggleGiftView() {
     this.GiftViewActive = !this.GiftViewActive;

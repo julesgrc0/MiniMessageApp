@@ -41,7 +41,8 @@ export class MessageRenderPipe implements PipeTransform {
 
   IDEA(response) {
     let res = response;
-    res = res?.replace(/\|(.*?)\|/g, '<i>" $1 "</i>');
+    res = res?.replace(/\|(.*?)\|/g, '<i> $1 </i>');
+    res = res?.replace(/\*(.*?)\*/g, '<b> $1 </b>');
     return res;
   }
 
