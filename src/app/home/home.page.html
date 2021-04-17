@@ -126,7 +126,7 @@
       <br /><br /><br /><br /><br /><br />
     </div>
     <div id="AutoCommands" *ngIf="CommandCompletionActive">
-      <div class="cmd-item  ion-activatable" *ngFor="let cmd of viewCommands" (click)="executeCommand(cmd)">
+      <div class="cmd-item  ion-activatable" *ngFor="let cmd of viewCommands" (click)="MessageValue = cmd">
         {{ cmd }}
         <ion-ripple-effect></ion-ripple-effect>
       </div>
@@ -152,7 +152,7 @@
       <button class="btn-round-right" (click)="sendMessage(true)" *ngIf="!CommandCompletionActive">
         <ion-icon name="send-outline" class="gift-icon"></ion-icon>
       </button>
-      <button class="btn-round-right" *ngIf="CommandCompletionActive"  (click)="executeCommand(MessageValue)">
+      <button class="btn-round-right" *ngIf="CommandCompletionActive"  (click)="executeCommand()">
         <ion-icon name="terminal-outline" class="gift-icon"></ion-icon>
       </button>
     </div>

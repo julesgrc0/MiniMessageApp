@@ -62,7 +62,7 @@ export interface Message {
       ),
       transition('open => closed', [animate('0.3s')]),
       transition('closed => open', [animate('0.3s')]),
-    ])
+    ]),
   ],
   encapsulation: ViewEncapsulation.None,
   providers: [],
@@ -564,25 +564,45 @@ export class HomePage implements OnInit, AfterViewChecked {
     }
   }
 
-  executeCommand(value) {
-    if (this.CommandCompletionActive) {
-      let cmd = value?.replace('/','')?.split(' ')[0];
-      let send = false;
-      switch(cmd) 
+  isValidCmd(value: string): boolean 
+  {
+    value = value.replace(value.replace(/\/[a-zA-Z]+/g,''),'');
+    for (let cmd of this.commands) {
+      cmd = cmd.replace(cmd.replace(/\/[a-zA-Z]+/g,''),'');
+      if(cmd == value)
       {
-        case 'remove':
-          send = true;
-        break;
+        return true;
       }
-      if(send) 
-      {
-        this.server.getSocket().emit(this.activeRoom+':cmd',{cmd:cmd});        
-      }
+    }
+    return false;
+  }
 
-      setTimeout(()=>{
-        this.CommandCompletionActive = false;
-        this.MessageValue = '';
-      },200)
+  executeCommand() {
+    if (this.CommandCompletionActive) {
+      if (this.viewCommands.length == 0) {
+        this.sendMessage(true);
+      } else {
+        
+        if (this.isValidCmd(this.MessageValue))
+        {
+          let send = false;
+          let cmd = this.MessageValue;
+
+          if (send) {
+            this.server
+              .getSocket()
+              .emit(this.activeRoom + ':cmd', { cmd: cmd });
+          }
+
+          setTimeout(() => {
+            this.viewCommands = [];
+            this.CommandCompletionActive = false;
+            this.MessageValue = '';
+          }, 200);
+        } else {
+          this.MessageValue = this.viewCommands[this.viewCommands.length - 1];
+        }
+      }
     }
   }
 
