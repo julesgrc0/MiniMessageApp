@@ -6,6 +6,7 @@ import {
 } from '@ionic-native/image-picker/ngx';
 import { Base64 } from '@ionic-native/base64/ngx';
 import { BatteryStatus } from '@ionic-native/battery-status/ngx';
+import {gameList} from '../game-list';
 
 export enum GiftType {
   IMAGE,
@@ -44,6 +45,8 @@ export class DialogGiftComponent implements OnInit {
     c: 'rgb(48,48,48)',
     d: 'rgb(48,48,48)',
   };
+  public list = gameList;
+  public gameIndex: number = 0;
 
   constructor(
     public dialogRef: MatDialogRef<DialogGiftComponent>,
@@ -104,6 +107,11 @@ export class DialogGiftComponent implements OnInit {
     }
   }
 
+  selectGame(index)
+  {
+    this.gameIndex = index;
+  }
+
   close(stop = false) {
     if (stop) {
       this.dialogRef.close(undefined);
@@ -131,6 +139,15 @@ export class DialogGiftComponent implements OnInit {
     {
       if (this.textContent.length > 0 && this.textContent.length <= 10) {
         this.data.outputMessage = "#"+this.textContent+"#";
+        this.isFinish = true;
+      } else {
+        this.isFinish = false;
+      }
+    }else if(this.data.type == GiftType.GAME) 
+    {
+      if (this.textContent.length > 4 && this.textContent.length <= 30) 
+      {
+        this.data.outputMessage = "game-"+JSON.stringify({text:this.textContent,image:this.gameIndex})+"-game";
         this.isFinish = true;
       } else {
         this.isFinish = false;

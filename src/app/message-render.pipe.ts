@@ -5,6 +5,7 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { Pipe, PipeTransform } from '@angular/core';
+import { gameList } from './game-list';
 @Pipe({
   name: 'messageRender',
 })
@@ -20,15 +21,46 @@ export class MessageRenderPipe implements PipeTransform {
 
     let tempRes = this.CODE(response);
     if (tempRes != response) {
-      response = tempRes;
-    } else {
-      response = this.URL(response);
-      response = this.IDEA(response);
-      response = this.BATTERY(response);
-      response = this.PHONE(response);
+      return tempRes;
     }
 
+    tempRes = this.BATTERY(response);
+    if (tempRes != response) {
+      return tempRes;
+    }
+
+    tempRes = this.GAME(response);
+    if (tempRes != response) {
+      return tempRes;
+    }
+
+    response = this.URL(response);
+    response = this.IDEA(response);
+    response = this.PHONE(response);
+
     return response;
+  }
+
+  GAME(response) {
+    let res = response + '';
+    
+    if (res.startsWith('game-') && res.endsWith('-game')) {
+      res = res.replace('game-', '');
+      res = res.replace('-game', '');
+      res = res.replace(/\&quot\;/g,'"');
+      try {
+        let game = JSON.parse(res);
+        res = '<div class="msg-game">';
+        res += '<img src="' + gameList[game.image] + '" class="game-image"/>';
+        res += '<p class="user-game">' + game.text + '</p>';
+        res += '</div>';
+        return res;
+      } catch {
+        return response;
+      }
+    } else {
+      return response;
+    }
   }
 
   PHONE(response) {
@@ -52,7 +84,7 @@ export class MessageRenderPipe implements PipeTransform {
 
   CODE(response) {
     let res = response;
-    let code = res?.split('_code_');
+    let code = res?.split('_code_') || [];
     if (code.length === 3) {
       res = '<pre class="code-content">' + code[1] + '</pre>';
     }

@@ -98,3 +98,33 @@ ion-textarea,ion-input {
   background: #131313;
   border-radius: 3px;
 }
+
+.game-list
+{
+  margin-bottom: 10px;
+  position: relative;
+  width: 100%;
+  background: #131313;
+  height: 70px;
+  padding:10px 0px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  border-radius: 2Px;
+  white-space: nowrap;
+  
+  .game-item
+  {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background: transparent no-repeat center;
+    background-size: cover;
+    border-radius: 3Px;
+    margin-left: 5px;
+    padding: 0;
+    &:hover
+    {
+      filter: opacity(0.2);
+    }
+  }
+}

@@ -386,7 +386,8 @@ export class HomePage implements OnInit, AfterViewChecked {
           data.type == GiftType.IDEA ||
           data.type == GiftType.CODE ||
           data.type == GiftType.BATTERY ||
-          data.type == GiftType.PHONE
+          data.type == GiftType.PHONE ||
+          data.type == GiftType.GAME
         ) {
           this.server.sendMessage(this.activeRoom, data.outputMessage);
         }

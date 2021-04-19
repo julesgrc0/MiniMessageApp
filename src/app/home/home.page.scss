@@ -436,3 +436,22 @@
     transform: translateY(-50%);
   }
 }
+
+.msg-game
+{
+  .game-image
+  {
+    border-radius: 0px;
+    width: 100%;
+  }
+  .user-game
+  {
+    background: #121212;
+    padding: 3px;
+    margin: 0;
+    margin-top: 10px;
+    margin-bottom: 5Px;
+    border-radius: 3px;
+    padding-left: 10px;
+  }
+}

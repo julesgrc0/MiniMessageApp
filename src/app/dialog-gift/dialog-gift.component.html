@@ -19,7 +19,7 @@
       <div class="case-p" [style.backgroundColor]="colorBattery.c"></div>
       <div class="case-p" [style.backgroundColor]="colorBattery.d"></div>
   </div>
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
@@ -30,7 +30,7 @@
 <div *ngIf="data.type == 2">
   <p>Envoyer une idée ou une citation</p>
   <ion-textarea rows="8" cols="40" maxlength="500" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-textarea>
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
@@ -41,33 +41,42 @@
 <div *ngIf="data.type == 3">
   <p>Envoyer du code</p>
   <ion-textarea rows="8" cols="40" maxlength="1500" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-textarea>
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 4">
   <p>Envoyer un numéro de téléphone</p>
   <ion-input placeholder="060000000" type="phone" maxlength="10" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-input>
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 5">
-  <button class="btn-check" (click)="close()">
+  <p>Choisisser un jeux</p>
+  <div class="game-list">
+    <div class="game-item" *ngFor="let game of list;let i = index" [style.backgroundImage]="'url('+game+')'" (click)="selectGame(i)"></div>
+  </div>
+  <p>Entrer votre pseudo de jeux</p>
+  <ion-input placeholder="player#0001" maxlength="30" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-input>
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 6">
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
@@ -75,7 +84,7 @@
   </button>
 </div>
 <div *ngIf="data.type == 7">
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
@@ -83,7 +92,7 @@
   </button>
 </div>
 <div *ngIf="data.type == 8">
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
@@ -91,7 +100,7 @@
   </button>
 </div>
 <div *ngIf="data.type == 9">
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
@@ -99,7 +108,7 @@
   </button>
 </div>
 <div *ngIf="data.type == 10">
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
@@ -107,7 +116,7 @@
   </button>
 </div>
 <div *ngIf="data.type == 11">
-  <button class="btn-check" (click)="close()">
+  <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
   <button class="btn-close" (click)="close(true)">
