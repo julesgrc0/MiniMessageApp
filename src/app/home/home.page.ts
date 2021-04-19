@@ -147,6 +147,7 @@ export class HomePage implements OnInit, AfterViewChecked {
                 isQuestionMessage: false,
               };
               this.messages.push(recMsg);
+              this.scrollToBottom();
             }
             this.loading = false;
           });
@@ -197,9 +198,6 @@ export class HomePage implements OnInit, AfterViewChecked {
   roomListenners() {
     this.server.getSocket().on(this.activeRoom + ':leave', (newUser) => {
       if (this.showNewUser) {
-        if (!this.messagePress.active) {
-          this.scrollToBottom();
-        }
 
         let newUserinfo: Message = {
           username: newUser.username,
@@ -213,14 +211,16 @@ export class HomePage implements OnInit, AfterViewChecked {
           isQuestionMessage: false,
         };
         this.messages.push(newUserinfo);
+
+        if (!this.messagePress.active) {
+          this.scrollToBottom();
+        }
       }
     });
 
     this.server.getSocket().on(this.activeRoom + ':join', (newUser) => {
       if (this.showNewUser) {
-        if (!this.messagePress.active) {
-          this.scrollToBottom();
-        }
+        
 
         let newUserinfo: Message = {
           username: newUser.username,
@@ -234,6 +234,9 @@ export class HomePage implements OnInit, AfterViewChecked {
           isQuestionMessage: false,
         };
         this.messages.push(newUserinfo);
+        if (!this.messagePress.active) {
+          this.scrollToBottom();
+        }
       }
     });
 
@@ -248,9 +251,7 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':message', (data) => {
       if (data.room === this.activeRoom) {
-        if (!this.messagePress.active) {
-          this.scrollToBottom();
-        }
+       
 
         let message: Message = {
           username: data.username,
@@ -264,7 +265,9 @@ export class HomePage implements OnInit, AfterViewChecked {
           isQuestionMessage: false,
         };
         this.messages.push(message);
-
+        if (!this.messagePress.active) {
+          this.scrollToBottom();
+        }
         if (this.messages.length > 100) {
           this.messages = this.messages.slice(0, 50);
         }
@@ -273,9 +276,7 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':image', (data) => {
       if (data.room === this.activeRoom) {
-        if (!this.messagePress.active) {
-          this.scrollToBottom();
-        }
+        
 
         this.server.getImage(data.message).then((image) => {
           if (image) {
@@ -292,6 +293,9 @@ export class HomePage implements OnInit, AfterViewChecked {
             };
 
             this.messages.push(message);
+            if (!this.messagePress.active) {
+              this.scrollToBottom();
+            }
             if (this.messages.length > 100) {
               this.messages = this.messages.slice(0, 50);
             }
@@ -316,6 +320,9 @@ export class HomePage implements OnInit, AfterViewChecked {
           haveSelect: false,
         };
         this.messages.push(message);
+        if (!this.messagePress.active) {
+          this.scrollToBottom();
+        }
       }
     });
 
@@ -371,12 +378,15 @@ export class HomePage implements OnInit, AfterViewChecked {
         width = '80%';
         break;
       case 'GAME':
+        width = '80%';
         giftType = GiftType.GAME;
         break;
       case 'HIDDEN':
+        width = '80%';
         giftType = GiftType.HIDDEN;
         break;
       case 'QUESTION':
+        width = '80%';
         giftType = GiftType.QUESTION;
         break;
       case 'LOCATION':
