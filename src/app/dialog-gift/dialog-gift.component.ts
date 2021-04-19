@@ -6,7 +6,8 @@ import {
 } from '@ionic-native/image-picker/ngx';
 import { Base64 } from '@ionic-native/base64/ngx';
 import { BatteryStatus } from '@ionic-native/battery-status/ngx';
-import {gameList} from '../game-list';
+import { gameList } from '../game-list';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 export enum GiftType {
   IMAGE,
@@ -34,7 +35,7 @@ export interface GiftDialogData {
   selector: 'app-dialog-gift',
   templateUrl: './dialog-gift.component.html',
   styleUrls: ['./dialog-gift.component.scss'],
-  providers: [ImagePicker, Base64, BatteryStatus],
+  providers: [ImagePicker, Base64, BatteryStatus, Geolocation],
 })
 export class DialogGiftComponent implements OnInit {
   public isFinish = false;
@@ -53,7 +54,8 @@ export class DialogGiftComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: GiftDialogData,
     private imagePicker: ImagePicker,
     private base64: Base64,
-    private batteryStatus: BatteryStatus
+    private batteryStatus: BatteryStatus,
+    private geolocation: Geolocation
   ) {}
 
   ngOnInit() {
@@ -81,9 +83,7 @@ export class DialogGiftComponent implements OnInit {
 
         this.data.outputMessage = 'B-';
         Object.keys(this.colorBattery).map((key) => {
-          
-          switch (this.colorBattery[key]) 
-          {
+          switch (this.colorBattery[key]) {
             case 'rgb(255,43,10)':
               this.data.outputMessage += 'r-';
               break;
@@ -95,20 +95,27 @@ export class DialogGiftComponent implements OnInit {
               break;
             case 'rgb(48,48,48)':
               this.data.outputMessage += 'n-';
-              break;  
+              break;
           }
         });
-        
+
         this.data.outputMessage += 'B';
 
         this.isFinish = true;
         subscription.unsubscribe();
       });
+    } else if (this.data.type == GiftType.LOCATION) {
+      this.geolocation
+        .getCurrentPosition()
+        .then((resp) => {
+          this.data.outputMessage = '{'+resp.coords.latitude.toPrecision()+','+resp.coords.longitude.toPrecision()+'}';
+          this.isFinish = true;
+        })
+        .catch((error) => {});
     }
   }
 
-  selectGame(index)
-  {
+  selectGame(index) {
     this.gameIndex = index;
   }
 
@@ -130,38 +137,36 @@ export class DialogGiftComponent implements OnInit {
       }
     } else if (this.data.type == GiftType.CODE) {
       if (this.textContent.length > 0 && this.textContent.length <= 1500) {
-        this.data.outputMessage = "_code_ "+this.textContent+" _code_";
+        this.data.outputMessage = '_code_ ' + this.textContent + ' _code_';
         this.isFinish = true;
       } else {
         this.isFinish = false;
       }
-    }else if(this.data.type == GiftType.PHONE) 
-    {
+    } else if (this.data.type == GiftType.PHONE) {
       if (this.textContent.length > 0 && this.textContent.length <= 10) {
-        this.data.outputMessage = "#"+this.textContent+"#";
+        this.data.outputMessage = '#' + this.textContent + '#';
         this.isFinish = true;
       } else {
         this.isFinish = false;
       }
-    }else if(this.data.type == GiftType.GAME) 
-    {
-      if (this.textContent.length > 4 && this.textContent.length <= 30) 
-      {
-        this.data.outputMessage = "game-"+JSON.stringify({text:this.textContent,image:this.gameIndex})+"-game";
+    } else if (this.data.type == GiftType.GAME) {
+      if (this.textContent.length > 4 && this.textContent.length <= 30) {
+        this.data.outputMessage =
+          'game-' +
+          JSON.stringify({ text: this.textContent, image: this.gameIndex }) +
+          '-game';
         this.isFinish = true;
       } else {
         this.isFinish = false;
       }
-    }else if(this.data.type == GiftType.HIDDEN)
-    {
+    } else if (this.data.type == GiftType.HIDDEN) {
       if (this.textContent.length > 0 && this.textContent.length <= 500) {
         this.data.outputMessage = '& ' + this.textContent + ' &';
         this.isFinish = true;
       } else {
         this.isFinish = false;
       }
-    }else if(this.data.type == GiftType.QUESTION)
-    {
+    } else if (this.data.type == GiftType.QUESTION) {
       if (this.textContent.length > 0 && this.textContent.length <= 150) {
         this.data.outputMessage = this.textContent;
         this.isFinish = true;

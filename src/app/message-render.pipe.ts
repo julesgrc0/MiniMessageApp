@@ -35,19 +35,44 @@ export class MessageRenderPipe implements PipeTransform {
     }
 
     response = this.URL(response);
+
     response = this.IDEA(response);
+
     response = this.PHONE(response);
+
+    response = this.MAP(response);
 
     return response;
   }
 
+  MAP(response) {
+    let res = response;
+    res?.match(/\{[\-0-9\.]+\,[\-0-9\.]+\}/g)?.map((item) => {
+      let it = item.replace('{', '');
+      it = it.replace('}', '');
+      let coord = it.split(',');
+
+      if (coord.length == 2) {
+        res = res.replace(
+          item,
+          "<a href='https://www.google.com/maps/?q=" +
+            coord.join(',') +
+            "' target='_BLANK'>" +
+            coord.join(',') +
+            '</a>'
+        );
+      }
+    });
+    return res;
+  }
+
   GAME(response) {
     let res = response + '';
-    
+
     if (res.startsWith('game-') && res.endsWith('-game')) {
       res = res.replace('game-', '');
       res = res.replace('-game', '');
-      res = res.replace(/\&quot\;/g,'"');
+      res = res.replace(/\&quot\;/g, '"');
       try {
         let game = JSON.parse(res);
         res = '<div class="msg-game">';

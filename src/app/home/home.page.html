@@ -62,10 +62,11 @@
           <!-- question -->
           <div class="question-content" *ngIf="message.isQuestionMessage">
             {{message.MessageContent.value}}<br><bR>
-            <button class="vote-1" (click)="clickQuestion(i,true)" [disabled]="message.haveSelect">{{ !message.haveSelect
-              ? 'OUI' : message.MessageContent.v1 }}</button>
+            <button class="vote-1" (click)="clickQuestion(i,true)" [disabled]="message.haveSelect">
+              {{
+        !message.haveSelect ? 'OUI' : ((message.MessageContent.v1 * 100)/ (message.MessageContent.v2+message.MessageContent.v1)) + '%' }}</button>
             <button class="vote-2" (click)="clickQuestion(i,false)" [disabled]="message.haveSelect">{{
-              !message.haveSelect ? 'NON' : message.MessageContent.v2 }}</button>
+              !message.haveSelect ? 'NON' : ((message.MessageContent.v2 * 100)/ (message.MessageContent.v2+message.MessageContent.v1)) + '%' }}</button>
           </div>
         </div>
 
@@ -86,10 +87,11 @@
           <!-- question -->
           <div class="question-content" *ngIf="message.isQuestionMessage">
             {{message.MessageContent.value}}<br><bR>
-            <button class="vote-1" (click)="clickQuestion(i,true)" [disabled]="message.haveSelect">{{ !message.haveSelect
-              ? 'OUI' : message.MessageContent.v1 }}</button>
-            <button class="vote-2" (click)="clickQuestion(i,false)" [disabled]="message.haveSelect">{{
-              !message.haveSelect ? 'NON' : message.MessageContent.v2 }}</button>
+              <button class="vote-1" (click)="clickQuestion(i,true)" [disabled]="message.haveSelect">
+                {{
+          !message.haveSelect ? 'OUI' : ((message.MessageContent.v1 * 100)/ (message.MessageContent.v2+message.MessageContent.v1)) + '%' }}</button>
+              <button class="vote-2" (click)="clickQuestion(i,false)" [disabled]="message.haveSelect">{{
+                !message.haveSelect ? 'NON' : ((message.MessageContent.v2 * 100)/ (message.MessageContent.v2+message.MessageContent.v1)) + '%' }}</button>
           </div>
         </div>
       </div>

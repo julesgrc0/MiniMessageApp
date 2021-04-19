@@ -128,3 +128,15 @@ ion-textarea,ion-input {
     }
   }
 }
+
+.icon-loc
+{
+  height: 40Px;
+  width: 40px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #131313;
+  border-radius: 3px;
+  padding: 20px;
+}

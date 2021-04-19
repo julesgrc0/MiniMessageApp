@@ -27,7 +27,6 @@ import { ModalRoomPage } from '../modal-room/modal-room.page';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ViewEncapsulation } from '@angular/core';
-
 export interface Message {
   username: string;
   userId: string;
@@ -450,7 +449,8 @@ export class HomePage implements OnInit, AfterViewChecked {
           data.type == GiftType.GAME ||
           data.type == GiftType.PHONE ||
           data.type == GiftType.HIDDEN ||
-          data.type == GiftType.BATTERY
+          data.type == GiftType.BATTERY ||
+          data.type == GiftType.LOCATION
         ) {
           this.server.sendMessage(this.activeRoom, data.outputMessage);
         } else if (data.type == GiftType.QUESTION) {
