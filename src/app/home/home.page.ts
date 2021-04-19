@@ -389,6 +389,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         giftType = GiftType.QUESTION;
         break;
       case 'LOCATION':
+        width = '70%';
         giftType = GiftType.LOCATION;
         break;
       case 'INFO':
@@ -402,7 +403,8 @@ export class HomePage implements OnInit, AfterViewChecked {
         break;
     }
 
-    if (giftType === GiftType.IMAGE) {
+    if (giftType === GiftType.IMAGE || giftType === GiftType.LOCATION)
+    {
       this.noResumImage = true;
     }
 
