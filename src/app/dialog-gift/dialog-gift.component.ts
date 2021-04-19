@@ -122,7 +122,15 @@ export class DialogGiftComponent implements OnInit {
       }
     } else if (this.data.type == GiftType.CODE) {
       if (this.textContent.length > 0 && this.textContent.length <= 1500) {
-        // this.data.outputMessage = "_code_ "+this.textContent+" _code_";
+        this.data.outputMessage = "_code_ "+this.textContent+" _code_";
+        this.isFinish = true;
+      } else {
+        this.isFinish = false;
+      }
+    }else if(this.data.type == GiftType.PHONE) 
+    {
+      if (this.textContent.length > 0 && this.textContent.length <= 10) {
+        this.data.outputMessage = "#"+this.textContent+"#";
         this.isFinish = true;
       } else {
         this.isFinish = false;

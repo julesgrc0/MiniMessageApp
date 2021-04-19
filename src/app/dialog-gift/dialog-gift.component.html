@@ -49,6 +49,8 @@
   </button>
 </div>
 <div *ngIf="data.type == 4">
+  <p>Envoyer un numéro de téléphone</p>
+  <ion-input placeholder="060000000" type="phone" maxlength="10" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-input>
   <button class="btn-check" (click)="close()">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>

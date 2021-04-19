@@ -86,12 +86,14 @@ export class HomePage implements OnInit, AfterViewChecked {
   public commands: string[] = [
     '/remove @user',
     '/tag @user',
-    '/close <room_id>',
+    '/close',
     '/exit',
     '/ping',
     '/alert',
     '/restart',
     '/home',
+    '/rooms',
+    '/settings'
   ];
   public viewCommands: string[] = [];
 
@@ -383,7 +385,8 @@ export class HomePage implements OnInit, AfterViewChecked {
         } else if (
           data.type == GiftType.IDEA ||
           data.type == GiftType.CODE ||
-          data.type == GiftType.BATTERY
+          data.type == GiftType.BATTERY ||
+          data.type == GiftType.PHONE
         ) {
           this.server.sendMessage(this.activeRoom, data.outputMessage);
         }

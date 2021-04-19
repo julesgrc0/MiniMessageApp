@@ -18,17 +18,28 @@ export class MessageRenderPipe implements PipeTransform {
       ?.replace(/</g, '&lt;')
       ?.replace(/"/g, '&quot;');
 
-    response = this.URL(response);
-    response = this.IDEA(response);
-    response = this.BATTERY(response);
+    let tempRes = this.CODE(response);
+    if (tempRes != response) {
+      response = tempRes;
+    } else {
+      response = this.URL(response);
+      response = this.IDEA(response);
+      response = this.BATTERY(response);
+      response = this.PHONE(response);
+    }
 
     return response;
   }
 
+  PHONE(response) {
+    let res = response;
+    res = res?.replace(/\#(.*?)\#/g, '<a href="tel:$1">$1</a>');
+    return res;
+  }
+
   BATTERY(response) {
     let batt = response ? response.split('-') : [];
-    if (batt.length == 6 && batt[0] == 'B' && batt[batt.length - 1] == 'B') 
-    {
+    if (batt.length == 6 && batt[0] == 'B' && batt[batt.length - 1] == 'B') {
       let res = '<div class="power">';
       for (let i = 1; i < 5; i++) {
         res += '\n\t<div class="case-p-el bk-' + batt[i] + '"></div>';
@@ -37,6 +48,16 @@ export class MessageRenderPipe implements PipeTransform {
       return res;
     }
     return response;
+  }
+
+  CODE(response) {
+    let res = response;
+    let code = res?.split('_code_');
+    if (code.length === 3) {
+      res = '<pre class="code-content">' + code[1] + '</pre>';
+    }
+
+    return res;
   }
 
   IDEA(response) {
@@ -49,7 +70,7 @@ export class MessageRenderPipe implements PipeTransform {
   URL(response) {
     let res = response;
     response
-    ?.match(/https?:\/\/(www\.)?([a-zA-Z0-9:\/\?\.\=\&\%\-\_\@]+)/g)
+      ?.match(/https?:\/\/(www\.)?([a-zA-Z0-9:\/\?\.\=\&\%\-\_\@]+)/g)
       ?.map((url) => {
         res = response.replace(
           url,
