@@ -76,6 +76,8 @@
 </div>
 
 <div *ngIf="data.type == 6">
+  <p>Envoyer un spoiler</p>
+  <ion-textarea rows="8" cols="40" maxlength="500" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-textarea>
   <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
@@ -83,7 +85,10 @@
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 7">
+  <p>Envoyer un sondage</p>
+  <ion-textarea rows="8" cols="40" maxlength="150" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-textarea>
   <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>

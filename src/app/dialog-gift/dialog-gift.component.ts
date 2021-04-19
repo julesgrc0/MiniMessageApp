@@ -152,6 +152,22 @@ export class DialogGiftComponent implements OnInit {
       } else {
         this.isFinish = false;
       }
+    }else if(this.data.type == GiftType.HIDDEN)
+    {
+      if (this.textContent.length > 0 && this.textContent.length <= 500) {
+        this.data.outputMessage = '& ' + this.textContent + ' &';
+        this.isFinish = true;
+      } else {
+        this.isFinish = false;
+      }
+    }else if(this.data.type == GiftType.QUESTION)
+    {
+      if (this.textContent.length > 0 && this.textContent.length <= 150) {
+        this.data.outputMessage = this.textContent;
+        this.isFinish = true;
+      } else {
+        this.isFinish = false;
+      }
     }
   }
 

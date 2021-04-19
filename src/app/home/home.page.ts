@@ -31,13 +31,16 @@ import { ViewEncapsulation } from '@angular/core';
 export interface Message {
   username: string;
   userId: string;
-  MessageContent: string;
+  MessageContent: any;
   isMe: boolean;
   color: string;
   isImage: boolean;
   isInfoMessage: boolean;
   isReconnectionMessage: boolean;
+  isQuestionMessage: boolean;
   pressValue?: number;
+  Id?: string;
+  haveSelect?: boolean;
 }
 
 @Component({
@@ -93,7 +96,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     '/restart',
     '/home',
     '/rooms',
-    '/settings'
+    '/settings',
   ];
   public viewCommands: string[] = [];
 
@@ -141,6 +144,7 @@ export class HomePage implements OnInit, AfterViewChecked {
                 isImage: false,
                 isInfoMessage: false,
                 isReconnectionMessage: true,
+                isQuestionMessage: false,
               };
               this.messages.push(recMsg);
             }
@@ -206,6 +210,7 @@ export class HomePage implements OnInit, AfterViewChecked {
           isImage: false,
           isInfoMessage: true,
           isReconnectionMessage: false,
+          isQuestionMessage: false,
         };
         this.messages.push(newUserinfo);
       }
@@ -226,6 +231,7 @@ export class HomePage implements OnInit, AfterViewChecked {
           isImage: false,
           isInfoMessage: true,
           isReconnectionMessage: false,
+          isQuestionMessage: false,
         };
         this.messages.push(newUserinfo);
       }
@@ -255,6 +261,7 @@ export class HomePage implements OnInit, AfterViewChecked {
           isImage: false,
           isInfoMessage: false,
           isReconnectionMessage: false,
+          isQuestionMessage: false,
         };
         this.messages.push(message);
 
@@ -281,6 +288,7 @@ export class HomePage implements OnInit, AfterViewChecked {
               isImage: true,
               isInfoMessage: false,
               isReconnectionMessage: false,
+              isQuestionMessage: false,
             };
 
             this.messages.push(message);
@@ -291,6 +299,50 @@ export class HomePage implements OnInit, AfterViewChecked {
         });
       }
     });
+
+    this.server.getSocket().on(this.activeRoom + ':question', (data) => {
+      if (data.room === this.activeRoom) {
+        let message: Message = {
+          username: data.username,
+          userId: data.userId,
+          MessageContent: data,
+          color: data.color,
+          isMe: this.ActiveUser.userId == data.userId ? true : false,
+          isImage: false,
+          isInfoMessage: false,
+          isReconnectionMessage: false,
+          isQuestionMessage: true,
+          Id: data.id,
+          haveSelect: false,
+        };
+        this.messages.push(message);
+      }
+    });
+
+    this.server.getSocket().on(this.activeRoom + ':question:update', (data) => {
+      let i = 0;
+      this.messages.map((msg) => {
+        if (msg.Id) {
+          if (msg.Id == data.id) {
+            this.messages[i].MessageContent.v1 = data.vote_1;
+            this.messages[i].MessageContent.v2 = data.vote_2;
+          }
+        }
+        i++;
+      });
+    });
+  }
+
+  clickQuestion(messageIndex, isYes) {
+    let msg = this.messages[messageIndex];
+    if (msg.Id && !msg.haveSelect) {
+      this.server.getSocket().emit('user:question:update', {
+        room: this.activeRoom,
+        vote: isYes,
+        questionID: msg.Id,
+      });
+      this.messages[messageIndex].haveSelect = true;
+    }
   }
 
   openGiftDialog(type: string) {
@@ -385,11 +437,17 @@ export class HomePage implements OnInit, AfterViewChecked {
         } else if (
           data.type == GiftType.IDEA ||
           data.type == GiftType.CODE ||
-          data.type == GiftType.BATTERY ||
+          data.type == GiftType.GAME ||
           data.type == GiftType.PHONE ||
-          data.type == GiftType.GAME
+          data.type == GiftType.HIDDEN ||
+          data.type == GiftType.BATTERY
         ) {
           this.server.sendMessage(this.activeRoom, data.outputMessage);
+        } else if (data.type == GiftType.QUESTION) {
+          this.server.getSocket().emit('user:question', {
+            room: this.activeRoom,
+            value: data.outputMessage,
+          });
         }
       } else {
         this.GiftViewActive = true;
@@ -403,6 +461,8 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.server.getSocket().off(this.activeRoom + ':image');
     this.server.getSocket().off(this.activeRoom + ':join');
     this.server.getSocket().off(this.activeRoom + ':leave');
+    this.server.getSocket().off(this.activeRoom + ':question');
+    this.server.getSocket().off(this.activeRoom + ':question:update');
   }
 
   ngAfterViewChecked() {
@@ -568,13 +628,11 @@ export class HomePage implements OnInit, AfterViewChecked {
     }
   }
 
-  isValidCmd(value: string): boolean 
-  {
-    value = value.replace(value.replace(/\/[a-zA-Z]+/g,''),'');
+  isValidCmd(value: string): boolean {
+    value = value.replace(value.replace(/\/[a-zA-Z]+/g, ''), '');
     for (let cmd of this.commands) {
-      cmd = cmd.replace(cmd.replace(/\/[a-zA-Z]+/g,''),'');
-      if(cmd == value)
-      {
+      cmd = cmd.replace(cmd.replace(/\/[a-zA-Z]+/g, ''), '');
+      if (cmd == value) {
         return true;
       }
     }
@@ -586,9 +644,7 @@ export class HomePage implements OnInit, AfterViewChecked {
       if (this.viewCommands.length == 0) {
         this.sendMessage(true);
       } else {
-        
-        if (this.isValidCmd(this.MessageValue))
-        {
+        if (this.isValidCmd(this.MessageValue)) {
           let send = false;
           let cmd = this.MessageValue;
 

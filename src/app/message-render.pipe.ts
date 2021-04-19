@@ -96,6 +96,7 @@ export class MessageRenderPipe implements PipeTransform {
     let res = response;
     res = res?.replace(/\|(.*?)\|/g, '<i> $1 </i>');
     res = res?.replace(/\*(.*?)\*/g, '<b> $1 </b>');
+    res = res?.replace(/\&amp\;(.*?)\&amp\;/g, '<i class="spoiler"> $1 </i>');
     return res;
   }
 
