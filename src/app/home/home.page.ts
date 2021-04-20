@@ -332,7 +332,7 @@ export class HomePage implements OnInit, AfterViewChecked {
       });
     });
 
-    this.server.getSocket().on('pong',(ping)=>{
+    this.server.getSocket().on('user:pong',(ping)=>{
       let recMsg: Message = {
         username: '',
         userId: '',
@@ -484,7 +484,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.server.getSocket().off(this.activeRoom + ':leave');
     this.server.getSocket().off(this.activeRoom + ':question');
     this.server.getSocket().off(this.activeRoom + ':question:update');
-    this.server.getSocket().off('pong');
+    this.server.getSocket().off('user:pong');
   }
 
   ngAfterViewChecked() {
@@ -683,7 +683,7 @@ export class HomePage implements OnInit, AfterViewChecked {
             exit(0);
             break;
           case '/ping':
-            this.server.getSocket().emit('ping', Date.now());
+            this.server.getSocket().emit('user:ping', Date.now());
             break;
           case '/update':
             this.checkUpdate();
