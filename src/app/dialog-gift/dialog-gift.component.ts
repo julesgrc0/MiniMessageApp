@@ -39,6 +39,8 @@ export interface GiftDialogData {
 })
 export class DialogGiftComponent implements OnInit {
   public isFinish = false;
+  public error = false;
+
   public textContent: string = '';
   public colorBattery = {
     a: 'rgb(48,48,48)',
@@ -60,58 +62,74 @@ export class DialogGiftComponent implements OnInit {
 
   ngOnInit() {
     if (this.data.type == GiftType.BATTERY) {
-      const subscription = this.batteryStatus.onChange().subscribe((status) => {
-        let level = status.level;
+      let out = setTimeout(() => {
+        this.error = true;
+      },2000);
+      const subscription = this.batteryStatus.onChange().subscribe(
+        (status) => {
+          clearTimeout(out);
+          let level = status.level;
 
-        if (level >= 100) {
-          Object.keys(this.colorBattery).map((key) => {
-            this.colorBattery[key] = 'rgb(56,186,39)';
-          });
-        } else if (level >= 75) {
-          this.colorBattery.b = 'rgb(255,43,10)';
-          this.colorBattery.c = 'rgb(255,129,10)';
-          this.colorBattery.d = 'rgb(56,186,39)';
-        } else if (level >= 50) {
-          this.colorBattery.c = 'rgb(255,129,10)';
-          this.colorBattery.d = 'rgb(56,186,39)';
-        } else if (level >= 25) {
-          this.colorBattery.c = 'rgb(255,43,10)';
-          this.colorBattery.d = 'rgb(255,129,10)';
-        } else {
-          this.colorBattery.d = 'rgb(255,43,10)';
-        }
-
-        this.data.outputMessage = 'B-';
-        Object.keys(this.colorBattery).map((key) => {
-          switch (this.colorBattery[key]) {
-            case 'rgb(255,43,10)':
-              this.data.outputMessage += 'r-';
-              break;
-            case 'rgb(56,186,39)':
-              this.data.outputMessage += 'g-';
-              break;
-            case 'rgb(255,129,10)':
-              this.data.outputMessage += 'o-';
-              break;
-            case 'rgb(48,48,48)':
-              this.data.outputMessage += 'n-';
-              break;
+          if (level >= 100) {
+            Object.keys(this.colorBattery).map((key) => {
+              this.colorBattery[key] = 'rgb(56,186,39)';
+            });
+          } else if (level >= 75) {
+            this.colorBattery.b = 'rgb(255,43,10)';
+            this.colorBattery.c = 'rgb(255,129,10)';
+            this.colorBattery.d = 'rgb(56,186,39)';
+          } else if (level >= 50) {
+            this.colorBattery.c = 'rgb(255,129,10)';
+            this.colorBattery.d = 'rgb(56,186,39)';
+          } else if (level >= 25) {
+            this.colorBattery.c = 'rgb(255,43,10)';
+            this.colorBattery.d = 'rgb(255,129,10)';
+          } else {
+            this.colorBattery.d = 'rgb(255,43,10)';
           }
-        });
 
-        this.data.outputMessage += 'B';
+          this.data.outputMessage = 'B-';
+          Object.keys(this.colorBattery).map((key) => {
+            switch (this.colorBattery[key]) {
+              case 'rgb(255,43,10)':
+                this.data.outputMessage += 'r-';
+                break;
+              case 'rgb(56,186,39)':
+                this.data.outputMessage += 'g-';
+                break;
+              case 'rgb(255,129,10)':
+                this.data.outputMessage += 'o-';
+                break;
+              case 'rgb(48,48,48)':
+                this.data.outputMessage += 'n-';
+                break;
+            }
+          });
 
-        this.isFinish = true;
-        subscription.unsubscribe();
-      });
+          this.data.outputMessage += 'B';
+
+          this.isFinish = true;
+          subscription.unsubscribe();
+        },
+        (err) => {
+          this.error = true;
+        }
+      );
     } else if (this.data.type == GiftType.LOCATION) {
       this.geolocation
         .getCurrentPosition()
         .then((resp) => {
-          this.data.outputMessage = '{'+resp.coords.latitude.toPrecision()+','+resp.coords.longitude.toPrecision()+'}';
+          this.data.outputMessage =
+            '{' +
+            resp.coords.latitude.toPrecision() +
+            ',' +
+            resp.coords.longitude.toPrecision() +
+            '}';
           this.isFinish = true;
         })
-        .catch((error) => {});
+        .catch((error) => {
+          this.error = true;
+        });
     }
   }
 
@@ -215,19 +233,26 @@ export class DialogGiftComponent implements OnInit {
       title: 'Choisissez une image à envoyer',
     };
 
-    this.imagePicker.getPictures(options).then((results) => {
-      for (var i = 0; i < results.length; i++) {
-        let res = results[i];
-        if (res) {
-          this.base64
-            .encodeFile(res)
-            .then((base64File: string) => {
-              this.data.outputMessage = base64File;
-              this.isFinish = true;
-            })
-            .catch((err) => {});
+    this.imagePicker
+      .getPictures(options)
+      .then((results) => {
+        for (var i = 0; i < results.length; i++) {
+          let res = results[i];
+          if (res) {
+            this.base64
+              .encodeFile(res)
+              .then((base64File: string) => {
+                this.data.outputMessage = base64File;
+                this.isFinish = true;
+              })
+              .catch((err) => {
+                this.error = true;
+              });
+          }
         }
-      }
-    });
+      })
+      .catch((err) => {
+        this.error = true;
+      });
   }
 }

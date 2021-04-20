@@ -27,6 +27,7 @@ import { ModalRoomPage } from '../modal-room/modal-room.page';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ViewEncapsulation } from '@angular/core';
+import { exit } from 'process';
 export interface Message {
   username: string;
   userId: string;
@@ -87,15 +88,15 @@ export class HomePage implements OnInit, AfterViewChecked {
   public messages: Message[] = [];
   public commands: string[] = [
     '/remove @user',
-    '/tag @user',
+    '/alert @user',
     '/close',
     '/exit',
     '/ping',
-    '/alert',
-    '/restart',
+    '/update',
     '/home',
     '/rooms',
     '/settings',
+    '/gift',
   ];
   public viewCommands: string[] = [];
 
@@ -197,7 +198,6 @@ export class HomePage implements OnInit, AfterViewChecked {
   roomListenners() {
     this.server.getSocket().on(this.activeRoom + ':leave', (newUser) => {
       if (this.showNewUser) {
-
         let newUserinfo: Message = {
           username: newUser.username,
           userId: newUser.id,
@@ -219,8 +219,6 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':join', (newUser) => {
       if (this.showNewUser) {
-        
-
         let newUserinfo: Message = {
           username: newUser.username,
           userId: newUser.id,
@@ -250,8 +248,6 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':message', (data) => {
       if (data.room === this.activeRoom) {
-       
-
         let message: Message = {
           username: data.username,
           userId: data.id,
@@ -275,8 +271,6 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':image', (data) => {
       if (data.room === this.activeRoom) {
-        
-
         this.server.getImage(data.message).then((image) => {
           if (image) {
             let message: Message = {
@@ -337,6 +331,22 @@ export class HomePage implements OnInit, AfterViewChecked {
         i++;
       });
     });
+
+    this.server.getSocket().on('pong',(ping)=>{
+      let recMsg: Message = {
+        username: '',
+        userId: '',
+        MessageContent: 'Ping '+ping+'ms',
+        isMe: false,
+        color: '',
+        isImage: false,
+        isInfoMessage: false,
+        isReconnectionMessage: true,
+        isQuestionMessage: false,
+      };
+      this.messages.push(recMsg);
+      this.scrollToBottom();
+    })
   }
 
   clickQuestion(messageIndex, isYes) {
@@ -374,7 +384,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         break;
       case 'PHONE':
         giftType = GiftType.PHONE;
-        width = '80%';
+        width = '65%';
         break;
       case 'GAME':
         width = '80%';
@@ -403,8 +413,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         break;
     }
 
-    if (giftType === GiftType.IMAGE || giftType === GiftType.LOCATION)
-    {
+    if (giftType === GiftType.IMAGE || giftType === GiftType.LOCATION) {
       this.noResumImage = true;
     }
 
@@ -475,6 +484,7 @@ export class HomePage implements OnInit, AfterViewChecked {
     this.server.getSocket().off(this.activeRoom + ':leave');
     this.server.getSocket().off(this.activeRoom + ':question');
     this.server.getSocket().off(this.activeRoom + ':question:update');
+    this.server.getSocket().off('pong');
   }
 
   ngAfterViewChecked() {
@@ -641,10 +651,8 @@ export class HomePage implements OnInit, AfterViewChecked {
   }
 
   isValidCmd(value: string): boolean {
-    value = value.replace(value.replace(/\/[a-zA-Z]+/g, ''), '');
     for (let cmd of this.commands) {
-      cmd = cmd.replace(cmd.replace(/\/[a-zA-Z]+/g, ''), '');
-      if (cmd == value) {
+      if (cmd.split(' ')[0] == value.split(' ')[0]) {
         return true;
       }
     }
@@ -653,27 +661,60 @@ export class HomePage implements OnInit, AfterViewChecked {
 
   executeCommand() {
     if (this.CommandCompletionActive) {
-      if (this.viewCommands.length == 0) {
-        this.sendMessage(true);
-      } else {
-        if (this.isValidCmd(this.MessageValue)) {
-          let send = false;
-          let cmd = this.MessageValue;
+      if (this.isValidCmd(this.MessageValue)) {
+        let cmds = this.MessageValue.split(' ');
+        let cmd = cmds[0];
 
-          if (send) {
-            this.server
-              .getSocket()
-              .emit(this.activeRoom + ':cmd', { cmd: cmd });
-          }
-
-          setTimeout(() => {
-            this.viewCommands = [];
-            this.CommandCompletionActive = false;
-            this.MessageValue = '';
-          }, 200);
-        } else {
-          this.MessageValue = this.viewCommands[this.viewCommands.length - 1];
+        switch (cmd) {
+          case '/remove':
+            if (cmds.length == 2) {
+              console.log('remove ', cmds[1]);
+            }
+            break;
+          case '/alert':
+            if (cmds.length == 2) {
+              console.log('alert ', cmds[1]);
+            }
+            break;
+          case '/close':
+            this.server.getSocket().emit('room:kill', '');
+            break;
+          case '/exit':
+            exit(0);
+            break;
+          case '/ping':
+            this.server.getSocket().emit('ping', Date.now());
+            break;
+          case '/update':
+            this.checkUpdate();
+            break;
+          case '/home':
+            this.server.getSocket().emit('room:kill', '');
+            this.messages = [];
+            this.roomRemove();
+            this.activeRoom = 0;
+            this.roomListenners();
+            this.server.getSocket().emit('user:select', 0);
+            break;
+          case '/rooms':
+            this.onRoomClick();
+            break;
+          case '/settings':
+            this.onMenuClick();
+            break;
+          case '/gift':
+            this.GiftViewActive = true;
+            break;
         }
+
+        setTimeout(() => {
+          this.viewCommands = [];
+          this.CommandCompletionActive = false;
+          this.MessageValue = '';
+        }, 200);
+      } else {
+        // this.MessageValue = this.viewCommands[this.viewCommands.length - 1];
+        this.sendMessage(true);
       }
     }
   }

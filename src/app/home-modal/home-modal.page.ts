@@ -36,7 +36,18 @@ export class HomeModalPage implements OnInit {
     private modalCtrl: ModalController
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void 
+  {
+    this.loading = true;
+    this.socket.on('username',(name)=>
+    {
+      this.loading = false;
+      this.username = name;
+      this.socket.off('username');
+    })
+    this.socket.emit('set:username', this.username);
+
+  }
 
   setColor(color: string): void {
     this.color = color;
@@ -54,11 +65,11 @@ export class HomeModalPage implements OnInit {
   onEndUsername()
   {
     this.loading = true;
-    this.socket.off('username');
     this.socket.on('username',(name)=>
     {
       this.loading = false;
       this.username = name;
+      this.socket.off('username');
     })
     this.socket.emit('set:username', this.username);
   }

@@ -3,12 +3,17 @@ div {
   width: 100%;
   min-height: 10px;
   padding-bottom: 60px;
-  p{
-    margin:0px;
+
+  p {
+    margin: 0px;
+
     margin: {
-      bottom:10px;
-    };
+      bottom: 10px;
+    }
+
+    ;
   }
+
   .btn-close,
   .btn-check {
     position: absolute;
@@ -24,7 +29,7 @@ div {
       width: 18px;
     }
 
-    &:disabled{
+    &:disabled {
       opacity: 0.5;
     }
   }
@@ -38,15 +43,18 @@ div {
   }
 
   .btn {
-    overflow:hidden;
+    overflow: hidden;
+
     padding: {
       left: 18px;
       right: 18px;
       top: 11px;
       bottom: 11px;
-    };
+    }
+
+    ;
     position: relative;
-    left: 50% ;
+    left: 50%;
     transform: translateX(-50%);
     top:0px;
 
@@ -57,8 +65,7 @@ div {
     transition: 0.5s;
   }
 
-  .power
-  {
+  .power {
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -69,51 +76,50 @@ div {
     border: 2px solid rgb(17, 17, 17);
     // overflow: hidden;
 
-    .case-p
-    {
+    .case-p {
       opacity: 0.5;
       display: inline-block;
       height: 50px;
       width: 20%;
-      margin:0px 2.5%;
+      margin: 0px 2.5%;
       border-radius: 2px;
       background: rgb(48, 48, 48);
     }
-    &::after{
-      content:"";
+
+    &::after {
+      content: "";
       height: 20px;
       width: 10px;
       border-radius: 3px;
       background: rgb(17, 17, 17);
-      color:rgb(17, 17, 17);
+      color: rgb(17, 17, 17);
       position: absolute;
       left: -10px;
-      top:50%;
-      transform:translateY(-50%);
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }
 
-ion-textarea,ion-input {
+ion-textarea,
+ion-input {
   background: #131313;
   border-radius: 3px;
 }
 
-.game-list
-{
+.game-list {
   margin-bottom: 10px;
   position: relative;
   width: 100%;
   background: #131313;
   height: 70px;
-  padding:10px 0px;
+  padding: 10px 0px;
   overflow-y: hidden;
   overflow-x: auto;
   border-radius: 2Px;
   white-space: nowrap;
-  
-  .game-item
-  {
+
+  .game-item {
     display: inline-block;
     width: 50px;
     height: 50px;
@@ -122,15 +128,14 @@ ion-textarea,ion-input {
     border-radius: 3Px;
     margin-left: 5px;
     padding: 0;
-    &:hover
-    {
+
+    &:hover {
       filter: opacity(0.2);
     }
   }
 }
 
-.icon-loc
-{
+.icon-loc {
   height: 40Px;
   width: 40px;
   position: relative;
@@ -139,4 +144,23 @@ ion-textarea,ion-input {
   background: #131313;
   border-radius: 3px;
   padding: 20px;
+}
+
+.center-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #131313;
+  border-radius: 3px;
+  height: 40Px;
+  width: 40px;
+  padding: 0;
+}
+
+.error-warning {
+  background: #cc2222;
+  color: #211b1b;
 }

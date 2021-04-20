@@ -1,9 +1,9 @@
 <div *ngIf="data.type == 0">
-  <button class="btn ion-activatable" (click)="openImage()">
+  <button class="btn ion-activatable" (click)="openImage()" *ngIf="!error">
     Ouvrir la gallerie d'images
     <ion-ripple-effect></ion-ripple-effect>
   </button>
-
+  <ion-icon name="warning-outline" class="icon-loc error-warning" *ngIf="error"></ion-icon>
   <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
@@ -13,12 +13,16 @@
 </div>
 
 <div *ngIf="data.type == 1">
-  <div class="power">
+  <div class="center-loader" *ngIf="!isFinish && !error">
+    <ion-spinner  class="icon-inner-loc"></ion-spinner>
+  </div>
+  <div class="power" *ngIf="!error && isFinish">
       <div class="case-p" [style.backgroundColor]="colorBattery.a"></div>
       <div class="case-p" [style.backgroundColor]="colorBattery.b"></div>
       <div class="case-p" [style.backgroundColor]="colorBattery.c"></div>
       <div class="case-p" [style.backgroundColor]="colorBattery.d"></div>
   </div>
+  <ion-icon name="warning-outline" class="icon-loc error-warning" *ngIf="error"></ion-icon>
   <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
@@ -96,11 +100,15 @@
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 8">
   <p>Partager votre position</p>
   <br>
   <ion-icon name="location-outline" class="icon-loc" *ngIf="isFinish"></ion-icon>
-  <ion-icon name="close-outline" class="icon-loc" *ngIf="!isFinish"></ion-icon>
+  <ion-icon name="warning-outline" class="icon-loc error-warning" *ngIf="error"></ion-icon>
+  <div class="center-loader" *ngIf="!isFinish && !error">
+    <ion-spinner  class="icon-inner-loc"></ion-spinner>
+  </div>
   <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
@@ -108,6 +116,7 @@
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 9">
   <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
