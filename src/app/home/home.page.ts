@@ -336,7 +336,7 @@ export class HomePage implements OnInit, AfterViewChecked {
       let recMsg: Message = {
         username: '',
         userId: '',
-        MessageContent: 'Ping '+ping+'ms',
+        MessageContent: 'ping '+ping/100+' ms',
         isMe: false,
         color: '',
         isImage: false,
