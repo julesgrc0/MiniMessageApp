@@ -191,6 +191,18 @@ export class DialogGiftComponent implements OnInit {
       } else {
         this.isFinish = false;
       }
+    }else if(this.data.type == GiftType.INFO)
+    {
+      if (this.textContent.length > 0 && this.textContent.length <= 500) {
+        let lines = this.textContent.split('\n');
+        
+        this.data.outputMessage = "_header_ "+lines[0]+" _header_\n";
+        lines.shift();
+        this.data.outputMessage += lines.join('\n');
+        this.isFinish = true;
+      } else {
+        this.isFinish = false;
+      }
     }
   }
 

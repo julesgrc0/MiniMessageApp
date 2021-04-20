@@ -118,6 +118,8 @@
 </div>
 
 <div *ngIf="data.type == 9">
+  <p>Envoyer un message d'information</p>
+  <ion-textarea rows="8" cols="40" maxlength="500" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-textarea>
   <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>

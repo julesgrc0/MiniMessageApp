@@ -34,6 +34,11 @@ export class MessageRenderPipe implements PipeTransform {
       return tempRes;
     }
 
+    tempRes = this.INFO(response);
+    if (tempRes != response) {
+      return tempRes;
+    }
+
     response = this.URL(response);
 
     response = this.IDEA(response);
@@ -43,6 +48,16 @@ export class MessageRenderPipe implements PipeTransform {
     response = this.MAP(response);
 
     return response;
+  }
+
+  INFO(response) 
+  {
+    console.log(response);
+    
+    let res = response+'';
+    res = res.split('\n').join('<br>');
+    res = res.replace(/\_header\_(.*?)\_header\_/g, '<i class="info-header">$1</i><br>');
+    return res;
   }
 
   MAP(response) {

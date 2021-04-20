@@ -87,8 +87,8 @@ export class HomePage implements OnInit, AfterViewChecked {
 
   public messages: Message[] = [];
   public commands: string[] = [
-    '/remove @user',
-    '/alert @user',
+    // '/remove @user',
+    // '/alert @user',
     '/close',
     '/exit',
     '/ping',
@@ -461,7 +461,8 @@ export class HomePage implements OnInit, AfterViewChecked {
           data.type == GiftType.PHONE ||
           data.type == GiftType.HIDDEN ||
           data.type == GiftType.BATTERY ||
-          data.type == GiftType.LOCATION
+          data.type == GiftType.LOCATION ||
+          data.type == GiftType.INFO
         ) {
           this.server.sendMessage(this.activeRoom, data.outputMessage);
         } else if (data.type == GiftType.QUESTION) {
@@ -666,7 +667,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         let cmd = cmds[0];
 
         switch (cmd) {
-          case '/remove':
+/*          case '/remove':
             if (cmds.length == 2) {
               console.log('remove ', cmds[1]);
             }
@@ -676,6 +677,7 @@ export class HomePage implements OnInit, AfterViewChecked {
               console.log('alert ', cmds[1]);
             }
             break;
+*/
           case '/close':
             this.server.getSocket().emit('room:kill', '');
             break;

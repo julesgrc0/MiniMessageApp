@@ -103,7 +103,7 @@
         <ion-ripple-effect></ion-ripple-effect>
       </div>
     </div>
-    <div id="bottomSection" *ngIf="!GiftViewActive && !popUpActiveRoom">
+    <div id="bottomSection" *ngIf="!GiftViewActive && !popUpActiveRoom" (click)="messageElement.setFocus()">
       <ion-input #messageElement class="message-box" maxlength="1000" placeholder="Envoyer un message" inputmode="text"
         autocorrect="off" [(ngModel)]="MessageValue" (ionChange)="onMessageChange()" (keypress)="onKeyPress($event)">
       </ion-input>
@@ -111,12 +111,15 @@
       <button class="btn-round" (click)="toggleGiftView()" [disabled]="CommandCompletionActive">
         <ion-icon name="gift-outline" class="gift-icon"></ion-icon>
       </button>
-      <button class="btn-round-right" (click)="sendMessage(true)" *ngIf="!CommandCompletionActive">
+
+        <button class="btn-round-right" (click)="sendMessage(true)" *ngIf="!CommandCompletionActive">
         <ion-icon name="send-outline" class="gift-icon"></ion-icon>
       </button>
+
       <button class="btn-round-right" *ngIf="CommandCompletionActive" (click)="executeCommand()">
         <ion-icon name="terminal-outline" class="gift-icon"></ion-icon>
       </button>
+
     </div>
     <div id="giftSection" [@openClose]="GiftViewActive ? 'open' : 'closed'"
       [style.display]="GiftViewActive ? 'block' : 'none'">
