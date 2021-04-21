@@ -29,6 +29,7 @@ export interface GiftDialogData {
   username: string;
   color: string;
   room: number;
+  messagesCount: number;
 }
 
 @Component({
@@ -130,6 +131,10 @@ export class DialogGiftComponent implements OnInit {
         .catch((error) => {
           this.error = true;
         });
+    }else if(this.data.type == GiftType.QR_CODE)
+    {
+      this.data.outputMessage = "%"+this.data.messagesCount+"%";
+      this.isFinish = true;
     }
   }
 
@@ -199,6 +204,14 @@ export class DialogGiftComponent implements OnInit {
         this.data.outputMessage = "_header_ "+lines[0]+" _header_\n";
         lines.shift();
         this.data.outputMessage += lines.join('\n');
+        this.isFinish = true;
+      } else {
+        this.isFinish = false;
+      }
+    }else if(this.data.type == GiftType.LOVE)
+    {
+      if (this.textContent.length > 0 && this.textContent.length <= 30) {
+        this.data.outputMessage = "L-"+this.textContent.replace('@','')+"-X-"+this.data.username+'-'+Math.round(Math.random() * 100)+"-L";
         this.isFinish = true;
       } else {
         this.isFinish = false;

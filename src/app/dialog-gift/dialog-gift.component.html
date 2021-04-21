@@ -127,7 +127,10 @@
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 10">
+  <p>Entrer le nom d'un utilisateur</p>
+  <ion-input placeholder="@user" maxlength="30" (ionChange)="onTextChange()" [(ngModel)]="textContent"></ion-input>
   <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>
@@ -135,7 +138,13 @@
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
+
 <div *ngIf="data.type == 11">
+  <p>Partager votre nombres de messages (depuis que l'application est ouverte)</p>
+  <br>
+  <div class="center-loader">
+    {{data.messagesCount}}
+  </div>
   <button class="btn-check" (click)="close()" [disabled]="!isFinish">
     <ion-icon name="checkmark-outline"></ion-icon>
   </button>

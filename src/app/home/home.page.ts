@@ -106,6 +106,7 @@ export class HomePage implements OnInit, AfterViewChecked {
   public activeRoom: number = 0;
   public MessageValue: string = '';
   public UpdateVersion: string = '';
+  public TotalMessageCount: number = 0;
 
   @ViewChild('messageElement') messageElement;
   @ViewChild('scrollBar') private scrollBar: ElementRef;
@@ -248,6 +249,8 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':message', (data) => {
       if (data.room === this.activeRoom) {
+        this.TotalMessageCount++;
+
         let message: Message = {
           username: data.username,
           userId: data.id,
@@ -271,6 +274,7 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':image', (data) => {
       if (data.room === this.activeRoom) {
+        this.TotalMessageCount++;
         this.server.getImage(data.message).then((image) => {
           if (image) {
             let message: Message = {
@@ -299,6 +303,7 @@ export class HomePage implements OnInit, AfterViewChecked {
 
     this.server.getSocket().on(this.activeRoom + ':question', (data) => {
       if (data.room === this.activeRoom) {
+        this.TotalMessageCount++;
         let message: Message = {
           username: data.username,
           userId: data.userId,
@@ -424,6 +429,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         username: this.ActiveUser.username,
         color: this.ActiveUser.color,
         room: this.activeRoom,
+        messagesCount:this.TotalMessageCount
       },
       id: 'giftDialog',
     });
@@ -458,11 +464,13 @@ export class HomePage implements OnInit, AfterViewChecked {
           data.type == GiftType.IDEA ||
           data.type == GiftType.CODE ||
           data.type == GiftType.GAME ||
+          data.type == GiftType.INFO ||
+          data.type == GiftType.LOVE ||
           data.type == GiftType.PHONE ||
           data.type == GiftType.HIDDEN ||
+          data.type == GiftType.QR_CODE ||
           data.type == GiftType.BATTERY ||
-          data.type == GiftType.LOCATION ||
-          data.type == GiftType.INFO
+          data.type == GiftType.LOCATION
         ) {
           this.server.sendMessage(this.activeRoom, data.outputMessage);
         } else if (data.type == GiftType.QUESTION) {
@@ -645,7 +653,6 @@ export class HomePage implements OnInit, AfterViewChecked {
         this.roomRemove();
         this.roomListenners();
       }
-
       this.server.sendMessage(this.activeRoom, this.MessageValue);
       this.MessageValue = '';
     }

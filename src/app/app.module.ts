@@ -35,7 +35,7 @@ import { DialogGiftComponent } from './dialog-gift/dialog-gift.component';
     HomeModalPageModule,
     ModalRoomPageModule,
     HttpClientModule,
-    MatDialogModule,
+    MatDialogModule
   ],
   providers: [
     {

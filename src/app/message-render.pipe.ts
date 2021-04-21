@@ -1,16 +1,10 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-  HttpResponse,
-} from '@angular/common/http';
 import { Pipe, PipeTransform } from '@angular/core';
 import { gameList } from './game-list';
 @Pipe({
   name: 'messageRender',
 })
 export class MessageRenderPipe implements PipeTransform {
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   transform(value: string): string {
     let response = value
@@ -39,6 +33,11 @@ export class MessageRenderPipe implements PipeTransform {
       return tempRes;
     }
 
+    tempRes = this.LOVE(response);
+    if (tempRes != response) {
+      return tempRes;
+    }
+
     response = this.URL(response);
 
     response = this.IDEA(response);
@@ -52,8 +51,6 @@ export class MessageRenderPipe implements PipeTransform {
 
   INFO(response) 
   {
-    console.log(response);
-    
     let res = response+'';
     res = res.split('\n').join('<br>');
     res = res.replace(/\_header\_(.*?)\_header\_/g, '<i class="info-header">$1</i><br>');
@@ -109,6 +106,24 @@ export class MessageRenderPipe implements PipeTransform {
     return res;
   }
 
+  LOVE(response) {
+    let lov = response ? response.split('-') : [];
+
+    if (lov.length == 6 && lov[0] == 'L' && lov[lov.length - 1] == 'L' && lov[2] == 'X')
+    {
+      let user1 = lov[1],user2 = lov[3];
+      let level = lov[lov.length - 2];
+      let res = '<div class="love-msg">';
+      res += '<i class="love-1">'+user1+'</i>';
+      res += '<i class="love-lv">'+level+'</i>';
+      res += '<div class="love-heart"></div>';
+      res += '<i class="love-2">'+user2+'</i>';
+      res += '</div>';
+      return res;
+    }
+    return response;
+  }
+
   BATTERY(response) {
     let batt = response ? response.split('-') : [];
     if (batt.length == 6 && batt[0] == 'B' && batt[batt.length - 1] == 'B') {
@@ -134,6 +149,7 @@ export class MessageRenderPipe implements PipeTransform {
 
   IDEA(response) {
     let res = response;
+    res = res?.replace(/\%(.*?)\%/g, '<i class="box-i"> $1 </i>');
     res = res?.replace(/\|(.*?)\|/g, '<i> $1 </i>');
     res = res?.replace(/\*(.*?)\*/g, '<b> $1 </b>');
     res = res?.replace(/\&amp\;(.*?)\&amp\;/g, '<i class="spoiler"> $1 </i>');
