@@ -408,6 +408,7 @@ export class HomePage implements OnInit, AfterViewChecked {
         giftType = GiftType.LOCATION;
         break;
       case 'INFO':
+        width = '80%';
         giftType = GiftType.INFO;
         break;
       case 'LOVE':
